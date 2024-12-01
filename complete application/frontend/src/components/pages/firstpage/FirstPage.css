@@ -75,90 +75,155 @@
 /* Cards Grid */
 .cards-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2.5rem;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  perspective: 2000px;
+  transform-style: preserve-3d;
+  padding: 2rem;
 }
 
-/* Hero Cards */
 .hero-feature-card {
-  background: rgba(255, 255, 255, 0);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border-radius: 28px;
-  padding: 2.5rem 2rem;
-  box-shadow: 
-    0 15px 30px rgba(0, 0, 0, 0.08),
-    0 0 0 1px rgba(255, 255, 255, 0.02) inset;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1.8rem;
-  text-align: center;
+  position: relative;
+  background: transparent;
+  border-radius: 20px;
+  padding: 2rem;
   transform-style: preserve-3d;
+  transform: translateZ(0);
+  transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   overflow: hidden;
-  min-height: 340px;
+  backdrop-filter: blur(10px);
+  box-shadow: 
+    0 15px 35px rgba(0, 0, 0, 0.2),
+    0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.hero-feature-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    800px circle at var(--mouse-x) var(--mouse-y),
+    rgba(255, 255, 255, 0.06),
+    transparent 40%
+  );
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.hero-feature-card:hover::before {
+  opacity: 1;
+}
+
+.hero-feature-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    600px circle at var(--mouse-x) var(--mouse-y),
+    rgba(255, 255, 255, 0.4),
+    transparent 40%
+  );
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.5s;
+  pointer-events: none;
 }
 
 .hero-feature-card:hover {
-  transform: translateY(-5px);
-  background: rgba(255, 255, 255, 0.01);
+  transform: translateZ(50px) rotateX(5deg) rotateY(5deg);
   box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    0 25px 50px rgba(0, 0, 0, 0.3),
+    0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.hero-feature-card:hover::after {
+  opacity: 0.1;
 }
 
 .hero-feature-card-icon {
-  font-size: 3rem;
-  background: var(--gradient-primary);
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 5px 10px rgba(59, 130, 246, 0.1));
+  font-size: 2.5rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  z-index: 2;
   transform: translateZ(30px);
+  text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
 }
 
 .hero-feature-card-title {
-  font-size: 1.4rem;
+  font-size: 1.5rem;
   font-weight: 600;
-  margin-bottom: 0.5rem;
-  background: linear-gradient(45deg, #fff, rgba(255, 255, 255, 0.9));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-family: var(--font-primary);
-  letter-spacing: -0.01em;
+  color: #fff;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 2;
+  transform: translateZ(20px);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .hero-feature-card-description {
-  font-size: 1rem;
-  font-weight: 400;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.7);
   line-height: 1.6;
-  letter-spacing: 0.01em;
-  font-family: var(--font-primary);
+  position: relative;
+  z-index: 2;
+  transform: translateZ(10px);
 }
 
 .hero-feature-card-shine {
   position: absolute;
-  inset: 0;
-  background: radial-gradient(
-    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0) 50%
-  );
-  opacity: 0;
-  transition: opacity 0.3s;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
   pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 20%,
+    rgba(255, 255, 255, 0.05) 50%,
+    transparent 80%
+  );
+  transform: translateX(-100%);
+  animation: shine 6s infinite;
 }
 
-.hero-feature-card:hover .hero-feature-card-shine {
-  opacity: 1;
+@keyframes shine {
+  0% {
+    transform: translateX(-100%) skewX(-15deg);
+  }
+  50% {
+    transform: translateX(100%) skewX(-15deg);
+  }
+  100% {
+    transform: translateX(100%) skewX(-15deg);
+  }
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateZ(20px) translateY(0);
+  }
+  50% {
+    transform: translateZ(20px) translateY(-10px);
+  }
+}
+
+.hero-feature-card {
+  animation: float 6s ease-in-out infinite;
+}
+
+.hero-feature-card:nth-child(2) {
+  animation-delay: -2s;
+}
+
+.hero-feature-card:nth-child(3) {
+  animation-delay: -4s;
+}
+
+/* Add mouse movement effect */
+.cards-container:hover > .hero-feature-card::after {
+  opacity: 0;
 }
 
 /* Button Styles */
