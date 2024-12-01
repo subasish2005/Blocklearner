@@ -1,0 +1,252 @@
+.weekly-activity-feed {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.activity-feed-container {
+  padding: 1rem;
+}
+
+.loading-spinner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 16rem;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+  border-radius: 50%;
+  height: 3rem;
+  width: 3rem;
+  border-top: 2px solid #3b82f6;
+  border-bottom: 2px solid #3b82f6;
+}
+
+.error-message {
+  text-align: center;
+  color: #ef4444;
+  padding: 1rem;
+}
+
+.day-group {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 1.5rem;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 2rem;
+}
+
+.activity-day {
+  margin-bottom: 2rem;
+}
+
+.day-header {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.activity-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.activity-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #4b5563;
+}
+
+.achievement-stat {
+  font-size: 0.875rem;
+  color: #7c3aed;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.activity-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.3s ease;
+}
+
+.activity-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.activity-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.activity-content {
+  margin-bottom: 1rem;
+}
+
+.activity-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.interaction-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+
+.interaction-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.liked {
+  color: #ef4444;
+}
+
+.comment-section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.comment-input {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 0.75rem;
+  width: 100%;
+  color: inherit;
+  margin-bottom: 0.5rem;
+}
+
+.comment-input:focus {
+  outline: none;
+  border-color: rgba(59, 130, 246, 0.5);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+}
+
+.comment-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.primary-button {
+  background-color: #3b82f6;
+  color: white;
+}
+
+.primary-button:hover {
+  background-color: #2563eb;
+}
+
+.secondary-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: inherit;
+}
+
+.secondary-button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.like-button, .comment-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.like-button:hover, .comment-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.like-button.liked {
+  color: #ef4444;
+}
+
+.comment {
+  padding: 0.75rem;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.comment-content {
+  margin-left: 2.5rem;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 640px) {
+  .weekly-activity-feed {
+    padding: 0.5rem;
+  }
+
+  .day-group {
+    padding: 1rem;
+  }
+
+  .activity-card {
+    padding: 1rem;
+  }
+}
+
+/* Dark mode styles */
+@media (prefers-color-scheme: dark) {
+  .activity-card {
+    background: rgba(17, 24, 39, 0.8);
+  }
+
+  .comment {
+    background: rgba(31, 41, 55, 0.5);
+  }
+
+  .comment-input {
+    background: rgba(31, 41, 55, 0.5);
+  }
+}

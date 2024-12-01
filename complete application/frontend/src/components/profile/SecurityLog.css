@@ -1,0 +1,245 @@
+.security-log-container {
+    background: var(--surface-background);
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: var(--shadow-elevation-medium);
+}
+
+.security-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.security-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.security-filters {
+    display: flex;
+    gap: 12px;
+}
+
+.security-filters select {
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border-color);
+    background: var(--surface-background);
+    color: var(--text-primary);
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.security-filters select:hover {
+    border-color: var(--primary-color);
+}
+
+.security-filters select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-color-alpha);
+}
+
+.security-events {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.security-event {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    background: var(--surface-background-alt);
+    border-radius: 8px;
+    border-left: 4px solid transparent;
+    transition: transform 0.2s ease;
+}
+
+.security-event:hover {
+    transform: translateX(4px);
+}
+
+.security-event.severity-high {
+    border-left-color: var(--error-color);
+}
+
+.security-event.severity-medium {
+    border-left-color: var(--warning-color);
+}
+
+.security-event.severity-low {
+    border-left-color: var(--success-color);
+}
+
+.security-event.severity-info {
+    border-left-color: var(--info-color);
+}
+
+.event-icon {
+    font-size: 24px;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-background);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.severity-high .event-icon {
+    background: var(--error-color-alpha);
+    color: var(--error-color);
+}
+
+.severity-medium .event-icon {
+    background: var(--warning-color-alpha);
+    color: var(--warning-color);
+}
+
+.severity-low .event-icon {
+    background: var(--success-color-alpha);
+    color: var(--success-color);
+}
+
+.severity-info .event-icon {
+    background: var(--info-color-alpha);
+    color: var(--info-color);
+}
+
+.event-content {
+    flex: 1;
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.event-header h4 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.1em;
+}
+
+.event-time {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+.event-description {
+    margin: 8px 0;
+    color: var(--text-secondary);
+}
+
+.event-details {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: var(--text-tertiary);
+}
+
+.event-ip, .event-location, .event-device {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.no-events {
+    text-align: center;
+    padding: 32px;
+    color: var(--text-secondary);
+    background: var(--surface-background-alt);
+    border-radius: 8px;
+}
+
+.security-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    color: var(--text-secondary);
+}
+
+.security-spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top-color: var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.security-error {
+    text-align: center;
+    padding: 32px;
+    color: var(--error-color);
+}
+
+.security-error button {
+    margin-top: 16px;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    background: var(--error-color);
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+}
+
+.security-error button:hover {
+    opacity: 0.9;
+}
+
+@media (max-width: 768px) {
+    .security-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .security-filters {
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .security-filters select {
+        width: 100%;
+    }
+
+    .security-event {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .event-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 20px;
+    }
+
+    .event-header {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .event-details {
+        flex-direction: column;
+        gap: 8px;
+    }
+}

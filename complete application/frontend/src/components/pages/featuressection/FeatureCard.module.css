@@ -1,0 +1,206 @@
+.container {
+  position: relative;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 80px 4%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  transform-style: preserve-3d;
+  perspective: 2000px;
+
+  overflow: hidden;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 450px;
+  max-width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 1rem;
+  padding: 1.75rem;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  height: 100%;
+  position: relative;
+  transform-style: preserve-3d;
+  transform: translateZ(0);
+  box-shadow: 
+    0 10px 30px rgba(0, 0, 0, 0.1),
+    0 0 20px rgba(255, 255, 255, 0.02) inset;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 30px;
+  padding: 1px;
+  /* background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.03),
+    rgba(125, 18, 255, 0.03),
+    rgba(0, 243, 255, 0.03)
+  ); */
+  /* -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); */
+  /* mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); */
+  /* -webkit-mask-composite: xor; */
+  /* mask-composite: exclude; */
+  /* pointer-events: none; */
+}
+
+.card:hover {
+  transform: translateY(-5px) scale(1.02);
+  transition-duration: 0.6s;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15),
+    0 0 30px rgba(125, 18, 255, 0.08),
+    0 0 50px rgba(0, 243, 255, 0.08);
+  /* background: rgba(255, 255, 255, 0.05); */
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transform-style: preserve-3d;
+  gap: 30px;
+  transform: translateZ(20px);
+  padding: 0.5rem;
+}
+
+.icon {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #00f3ff;
+  transform: translateZ(30px);
+  filter: drop-shadow(0 5px 15px rgba(0, 243, 255, 0.2));
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover .icon {
+  transform: translateZ(50px) scale(1.1);
+  transition-duration: 0.6s;
+  filter: drop-shadow(0 10px 25px rgba(0, 243, 255, 0.3));
+}
+
+.titleWrapper {
+  transform-style: preserve-3d;
+  transform: translateZ(25px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover .titleWrapper {
+  transform: translateZ(40px);
+}
+
+.title {
+  font-size: 1.4rem;
+  font-weight: 500;
+  color: #ffffff;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+  transform: translateZ(20px);
+  text-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #ffffff 60%, #e6e6e6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.description {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  text-align: center;
+  width: 100%;
+}
+
+.card:hover .description {
+  transform: translateZ(30px);
+  color: rgba(255, 255, 255, 1);
+}
+
+.actionWrapper {
+  margin-top: auto;
+  padding-top: 30px;
+  width: 100%;
+  transform-style: preserve-3d;
+  transform: translateZ(10px);
+  transition: transform 0.4s ease;
+}
+
+.card:hover .actionWrapper {
+  transform: translateZ(25px);
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 24px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 15px;
+  color: rgba(255, 255, 255, 0.95);
+  font-size: 16px;
+  font-weight: 400;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  color: #ffffff;
+}
+
+/* Responsive styles */
+@media (max-width: 1400px) {
+  .container {
+    grid-template-columns: repeat(2, 1fr);
+    padding: 60px 3%;
+  }
+}
+
+@media (max-width: 900px) {
+  .container {
+    grid-template-columns: 1fr;
+    padding: 40px 20px;
+    gap: 30px;
+  }
+
+  .card {
+    min-height: 400px;
+    padding: 1.5rem;
+  }
+
+  .title {
+    font-size: 1.2rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .description {
+    font-size: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding: 30px 15px;
+  }
+
+  .card {
+    min-height: 350px;
+    padding: 1.25rem;
+  }
+}

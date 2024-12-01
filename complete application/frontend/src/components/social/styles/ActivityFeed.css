@@ -1,0 +1,50 @@
+.activity-feed {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.activity-item {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.activity-content {
+  flex: 1;
+}
+
+.activity-user {
+  font-weight: 600;
+  color: #333;
+}
+
+.activity-action {
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.activity-timestamp {
+  font-size: 0.8rem;
+  color: #999;
+}
+
+.no-activity {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+}

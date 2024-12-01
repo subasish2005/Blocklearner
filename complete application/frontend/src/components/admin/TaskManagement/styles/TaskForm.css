@@ -1,0 +1,157 @@
+.task-form {
+    padding: 24px;
+}
+
+.MuiDialog-paper {
+    background-color: white !important;
+}
+
+.reward-item {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    margin-top: 16px;
+    padding: 16px;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    background-color: #f5f5f5;
+}
+
+.reward-type {
+    flex: 2;
+}
+
+.reward-amount {
+    flex: 1;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon svg {
+    font-size: 28px;
+    color: #fff;
+}
+
+.stat-icon.primary {
+    background-color: #3f51b5;
+}
+
+.stat-icon.secondary {
+    background-color: #f50057;
+}
+
+.stat-icon.success {
+    background-color: #4caf50;
+}
+
+.stat-icon.error {
+    background-color: #f44336;
+}
+
+.stat-icon.warning {
+    background-color: #ff9800;
+}
+
+.stat-icon.info {
+    background-color: #2196f3;
+}
+
+.progress-bar {
+    height: 8px;
+    border-radius: 4px;
+}
+
+.progress-bar.primary {
+    background-color: rgba(63, 81, 181, 0.2);
+}
+
+.progress-bar.primary .MuiLinearProgress-bar {
+    background-color: #3f51b5;
+}
+
+.progress-bar.secondary {
+    background-color: rgba(245, 0, 87, 0.2);
+}
+
+.progress-bar.secondary .MuiLinearProgress-bar {
+    background-color: #f50057;
+}
+
+.progress-bar.success {
+    background-color: rgba(76, 175, 80, 0.2);
+}
+
+.progress-bar.success .MuiLinearProgress-bar {
+    background-color: #4caf50;
+}
+
+.progress-bar.error {
+    background-color: rgba(244, 67, 54, 0.2);
+}
+
+.progress-bar.error .MuiLinearProgress-bar {
+    background-color: #f44336;
+}
+
+.progress-bar.warning {
+    background-color: rgba(255, 152, 0, 0.2);
+}
+
+.progress-bar.warning .MuiLinearProgress-bar {
+    background-color: #ff9800;
+}
+
+.progress-bar.info {
+    background-color: rgba(33, 150, 243, 0.2);
+}
+
+.progress-bar.info .MuiLinearProgress-bar {
+    background-color: #2196f3;
+}
+
+/* Add hover effect to buttons */
+.MuiButton-root:hover {
+    opacity: 0.9;
+}
+
+/* Add transition for smooth hover effects */
+.MuiButton-root {
+    transition: all 0.3s ease;
+}
+
+/* Style form sections */
+.form-section {
+    margin: 24px 0;
+    padding: 16px;
+    border-radius: 4px;
+    background-color: #f8f9fa;
+}
+
+/* Style form headings */
+.form-section h6 {
+    margin-bottom: 16px;
+    color: #1976d2;
+}
+
+/* Add shadow to the dialog */
+.MuiDialog-paper {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Style form fields */
+.MuiTextField-root, .MuiFormControl-root {
+    margin-bottom: 16px !important;
+}
+
+/* Style dialog title */
+.MuiDialogTitle-root {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e0e0e0;
+}

@@ -1,0 +1,317 @@
+/* Modern Dashboard Design with Dark Aesthetic */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Glass Effects */
+  --glass-bg: rgba(15, 23, 42, 0.95);
+  --glass-border: rgba(71, 85, 105, 0.15);
+  --glass-shadow: 
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.3);
+  --glass-highlight: rgba(148, 163, 184, 0.1);
+  
+  /* 3D Effects */
+  --depth-shadow: 
+    0 12px 40px rgba(0, 0, 0, 0.6),
+    0 3px 12px rgba(0, 0, 0, 0.4);
+  --hover-transform: translateY(-3px) scale(1.02);
+  --card-perspective: 1500px;
+  
+  /* Text Colors */
+  --text-primary: #f1f5f9;
+  --text-secondary: rgba(241, 245, 249, 0.8);
+  --text-muted: rgba(241, 245, 249, 0.6);
+  
+  /* Spacing */
+  --spacing-xs: 0.625rem;
+  --spacing-sm: 1.25rem;
+  --spacing-md: 1.875rem;
+  --spacing-lg: 2.5rem;
+  --spacing-xl: 3.75rem;
+
+  /* Layout */
+  --header-height: 4.5rem;
+  --sidebar-width: 280px;
+  --container-width: 1440px;
+  --widget-gap: 1.25rem;
+  
+  /* Animations */
+  --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* Font family */
+  --font-primary: 'Montserrat', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Main Dashboard Container */
+.dashboard {
+  min-height: 100vh;
+  background-image: url('../../assets/images/download2.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+  color: var(--text-primary);
+  font-family: var(--font-primary);
+}
+
+/* Main Content Area */
+.dashboard-main {
+  min-height: 100vh;
+  background: transparent;
+  padding: calc(var(--header-height) + 1rem) 1.5rem 2rem;
+}
+
+/* Dashboard Header */
+.dashboard-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background: transparent;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  transition: all var(--transition-normal);
+}
+
+.dashboard-header.scrolled {
+  background: rgba(17, 25, 40, 0.98);
+  border-bottom: 1px solid rgba(99, 102, 241, 0.2);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.header-content {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+}
+
+.dashboard-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header-buttons {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.header-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  transition: all var(--transition-normal);
+  color: var(--text-primary);
+}
+
+.header-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+/* Specific button styles - these will work with HoverBorderGradient */
+.home :global(.content) {
+  background: linear-gradient(45deg, #6366f1, #8b5cf6);
+}
+
+.tasks :global(.content) {
+  background: linear-gradient(45deg, #8b5cf6, #10b981);
+}
+
+.profile :global(.content) {
+  background: linear-gradient(45deg, #10b981, #f59e0b);
+}
+
+.logout :global(.content) {
+  background: linear-gradient(45deg, #f59e0b, #6366f1);
+}
+
+/* Admin Dropdown Menu */
+.admin-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.admin-dropdown-content {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  box-shadow: var(--glass-shadow);
+  min-width: 200px;
+  z-index: 1000;
+  margin-top: 0.5rem;
+  overflow: hidden;
+  transform-origin: top right;
+  animation: dropdownFade 0.2s ease-out;
+}
+
+.admin-dropdown-content .header-button {
+  display: flex;
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0;
+  justify-content: flex-start;
+  transition: var(--transition-fast);
+  background-color: transparent;
+  width : 10rem;
+}
+
+.admin-dropdown-content .header-button:hover {
+  background: var(--glass-highlight);
+}
+
+.admin-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-toggle svg:last-child {
+  transition: transform var(--transition-fast);
+}
+
+.admin-toggle.open svg:last-child {
+  transform: rotate(180deg);
+}
+
+@keyframes dropdownFade {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Error State */
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: rgba(15, 23, 42, 0.95);
+  padding: 2rem;
+}
+
+.error-content {
+  background: rgba(239, 68, 68, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  max-width: 400px;
+}
+
+.error-message {
+  color: #ef4444;
+  font-size: 1.125rem;
+  margin-bottom: 1rem;
+}
+
+.refresh-button {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.refresh-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1200px) {
+  :root {
+    --container-width: 100%;
+  }
+}
+
+@media (max-width: 992px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-md);
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-main {
+    padding: calc(var(--header-height) + 1rem) 1rem 1.5rem;
+  }
+  
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    padding: var(--spacing-sm) 0;
+  }
+
+  .dashboard-header {
+    height: auto;
+  }
+
+  .header-buttons {
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-xs);
+  }
+
+  .header-button {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-title {
+    font-size: 1.2rem;
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--glass-highlight);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--glass-border);
+}

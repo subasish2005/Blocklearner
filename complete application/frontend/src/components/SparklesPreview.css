@@ -1,0 +1,248 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+
+/* Container Styling */
+.sparkles-preview-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: 0;
+  margin: 0;
+}
+
+/* Title Styling */
+.sparkles-title {
+  font-size: clamp(2rem, 5vw, 6rem); /* Responsive font size */
+  font-weight: bold;
+  text-align: center;
+  color: white;
+  position: relative;
+  z-index: 10;
+  margin: 0; /* Remove margin */
+  padding-bottom: 0; /* Optional: Slight padding for overlap effect */
+}
+
+/* Content Wrapper for Sparkles and Gradients */
+.sparkles-content {
+  width: clamp(20rem, 80%, 40rem); /* Responsive width */
+  height: 20vh; /* Responsive height */
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Gradients Styling */
+.gradient {
+  position: absolute;
+  align-items: center;
+  top: 0;
+  background: linear-gradient(to right, transparent, #6366f1, transparent);
+  transition: all 0.3s ease-in-out;
+}
+
+/* Gradient 1 */
+.gradient1 {
+  left: clamp(1rem, 10%, 5rem);
+  right: clamp(1rem, 10%, 5rem);
+  height: 2px;
+  width: 75%;
+  filter: blur(4px);
+}
+
+/* Gradient 2 */
+.gradient2 {
+  left: clamp(1rem, 10%, 5rem);
+  right: clamp(1rem, 10%, 5rem);
+  height: 1px;
+  width: 75%;
+}
+
+/* Gradient 3 */
+.gradient3 {
+  left: clamp(2rem, 5%, 8rem); /* Adjusted for better position */
+  right: clamp(2rem, 15%, 10rem);
+  height: 5px;
+  width: 35%; /* Slightly increased width */
+  background: linear-gradient(to right, transparent, #38bdf8, transparent);
+  filter: blur(4px);
+}
+
+/* Gradient 4 */
+.gradient4 {
+  left: clamp(1rem, 7%, 6rem); /* Adjusted for better position */
+  right: clamp(2rem, 15%, 12rem);
+  height: 1px;
+  width: 30%;
+  background: linear-gradient(to right, transparent, #38bdf8, transparent);
+}
+
+/* Radial Gradient Overlay */
+.radial-gradient-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  mask-image: radial-gradient(350px 200px at top, transparent 20%, white);
+  -webkit-mask-image: radial-gradient(350px 200px at top, transparent 20%, white);
+}
+
+/* FlipWords Section Styling */
+.sparkles-flip-text-container {
+  position: absolute;
+  bottom: 20%;
+  left: 2%;
+  text-align: left;
+  color: white;
+}
+
+.sparkles-flip-text-container h1 {
+  font-size: 2.5rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+
+.sparkles-flip-text-container p {
+  font-size: 1rem;
+  margin: 1rem 0 0;
+}
+
+/* Hello World Section Styling */
+.hello-world-section {
+  position: absolute;
+  bottom: 15%;
+  right: 5%;
+  text-align: right;
+  color: white;
+}
+
+.hello-world-section h1 {
+  font-size: 1.5rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  margin: 0;
+}
+.hello-world-section h2 {
+  font-size: 1.5rem;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  margin: 0;
+  color: white;
+}
+
+.hello-world-section p {
+  font-size: 1rem;
+  margin: 0.5rem 0 0;
+}
+
+/* Trusted Partners Section */
+.trusted-partners-section {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 5rem;
+  background-color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.partners-scroll {
+  display: flex;
+  gap: 3rem;
+  animation: scroll-left 10s linear infinite;
+  white-space: nowrap;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.partners-scroll span {
+  display: inline-block;
+}
+
+/* Scrolling Animation */
+@keyframes scroll-left {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+/* Media Queries for Better Responsiveness */
+@media (max-width: 768px) {
+  /* Title Font Size */
+  .sparkles-title {
+    font-size: 2.5rem;
+  }
+
+  /* Content Section */
+  .sparkles-content {
+    height: 12rem;
+    width: 100%;
+  }
+
+  .gradient1,
+  .gradient2 {
+    left: 1rem;
+    right: 1rem;
+    width: 85%;
+  }
+
+  .gradient3,
+  .gradient4 {
+    left: 1rem;
+    right: 2rem;
+    width: 50%; /* Adjusted size */
+  }
+
+  /* Radial Gradient Overlay for Mobile */
+  .radial-gradient-overlay {
+    background-color: black;
+    mask-image: radial-gradient(250px 150px at top, transparent 20%, white);
+    -webkit-mask-image: radial-gradient(250px 150px at top, transparent 20%, white);
+  }
+
+  /* FlipWords Section */
+  .sparkles-flip-text-container {
+    left: 0;
+    right: 0;
+    bottom: 10%;
+    width: 90%; /* Centered and expanded for mobile */
+    text-align: center;
+  }
+
+  .sparkles-flip-text-container h1 {
+    font-size: 1.2rem;
+  }
+
+  .sparkles-flip-text-container p {
+    font-size: 0.9rem;
+  }
+
+  /* Hide Right Section */
+  .hello-world-section {
+    display: none;
+  }
+
+  /* Trusted Partners Adjustments */
+  .trusted-partners-section {
+    height: 4rem;
+  }
+
+  .partners-scroll {
+    font-size: 1rem;
+    gap: 1.5rem;
+  }
+}
+
+

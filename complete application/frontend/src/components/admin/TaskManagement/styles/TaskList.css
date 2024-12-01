@@ -1,0 +1,28 @@
+.task-list-container {
+    padding: 16px;
+}
+
+.task-list-filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.filter-field {
+    min-width: 200px;
+}
+
+.category-chip {
+    margin-right: 8px;
+}
+
+.points-chip {
+    background-color: #e3f2fd;
+}
+
+@media (max-width: 600px) {
+    .filter-field {
+        width: 100%;
+    }
+}
