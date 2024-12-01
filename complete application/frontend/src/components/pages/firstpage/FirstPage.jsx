@@ -1,10 +1,7 @@
-/* eslint-disable react/prop-types */
-import PropTypes from 'prop-types';
-import { cn } from '@/lib/utils';
 import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { HoverBorderGradient } from '../../../components/customcomponents/hover boarder gradient/HoverBorderGradient';
-import Card3D from './Card3D';
 import './FirstPage.css';
 
 // Text animation variants
@@ -70,33 +67,38 @@ const cardVariants = {
 const cardData = [
   {
     title: "Community Building",
-    description: "Connect with like-minded individuals and build lasting relationships within your community.",
+    description: "Connect with like-minded individuals, collaborate on projects, and grow your knowledge in the Web3 space.",
     icon: "🤝"
   },
   {
-    title: "Skill Development",
-    description: "Access resources and opportunities to enhance your skills and knowledge.",
+    title: "Event Participation",
+    description: "Take part in exclusive Web3 events, AMAs, hackathons, and more. Stay informed and connected to the latest trends in blockchain.",
     icon: "📚"
   },
   {
     title: "Achievement System",
-    description: "Track your progress and earn recognition for your contributions to the community.",
+    description: "Gain points for completing simple to advanced tasks. From participating in community discussions to coding challenges, every effort earns you recognition.",
     icon: "🏆"
   }
 ];
 
 // FirstPage Component
 const FirstPage = () => {
+  const navigate = useNavigate();
   const cardsRef = useRef(null);
   const textRef = useRef(null);
   const isCardsInView = useInView(cardsRef, { once: true, margin: "-100px" });
   const isTextInView = useInView(textRef, { once: true, margin: "-100px" });
 
+  const handleJoinClick = () => {
+    navigate('/login');
+  };
+
   return (
-    <div className="relative min-h-screen">
+    <div className="page-container">
       <div className="background-lines" />
       
-      <div className="relative z-10">
+      <div className="content-wrapper">
         <section className="hero">
           <div className="hero-content">
             <motion.div 
@@ -110,23 +112,22 @@ const FirstPage = () => {
                 className="hero-title"
                 variants={textVariants}
               >
-                Empower Your Community, Unlock Your Potential
+               Shape the Future of Web3
               </motion.h1>
               
               <motion.p 
                 className="hero-description"
                 variants={textVariants}
               >
-                Join our innovative platform designed to foster community development 
-                and connection. Earn points, showcase your achievements, and collaborate 
-                with friends to create a vibrant community.
+               At BlockLearner, we believe in empowering individuals and communities to play an active role in shaping the decentralized future.
+               Start your Web3 journey with us today!
               </motion.p>
               
               <motion.div 
                 className="hero-actions"
                 variants={textVariants}
               >
-                <HoverBorderGradient className="join-button">
+                <HoverBorderGradient className="join-button" onClick={handleJoinClick}>
                   Join Now
                 </HoverBorderGradient>
                 <HoverBorderGradient className="learn-more-button">
@@ -147,13 +148,12 @@ const FirstPage = () => {
                   <motion.div
                     key={index}
                     variants={cardVariants}
+                    className="hero-feature-card"
                   >
-                    <Card3D
-                      title={card.title}
-                      description={card.description}
-                      icon={card.icon}
-                      className="feature-card"
-                    />
+                    <div className="hero-feature-card-icon">{card.icon}</div>
+                    <h3 className="hero-feature-card-title">{card.title}</h3>
+                    <p className="hero-feature-card-description">{card.description}</p>
+                    <div className="hero-feature-card-shine"></div>
                   </motion.div>
                 ))}
               </motion.div>

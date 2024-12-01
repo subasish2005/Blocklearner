@@ -128,35 +128,33 @@
 
 .featureImage {
   flex: 1;
-  max-width: 40%;
-  height: auto;
-  border-radius: 1.5rem;
-  box-shadow: 
-    0 20px 40px rgba(0, 0, 0, 0.3),
-    0 0 100px rgba(0, 243, 255, 0.1);
-  transition: transform 0.3s ease;
-  animation: float 6s ease-in-out infinite;
-  margin-right: 8%;
+  height: 600px;
+  max-width: 800px;
+  background: transparent;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: none;
+  position: relative;
+  margin-right: 4%;
+  transition: all 0.3s ease-in-out;
 }
 
-@keyframes float {
-  0%, 100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
+.featureImage:hover {
+  transform: translateY(-5px);
 }
 
-@keyframes headingGlow {
-  0%, 100% {
-    opacity: 0.95;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-  }
-  50% {
-    opacity: 1;
-    text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
-  }
+.featureImage > div {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute !important;
+  top: 0;
+  left: 0;
+}
+
+.featureImage canvas {
+  width: 100% !important;
+  height: 100% !important;
+  outline: none;
 }
 
 .card3D {
@@ -224,6 +222,26 @@
   pointer-events: none;
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes headingGlow {
+  0%, 100% {
+    opacity: 0.95;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+  }
+}
+
 @keyframes glow {
   0% {
     opacity: 0.5;
@@ -248,15 +266,15 @@
   }
 
   .featureImage {
-    max-width: 45%;
+    height: 500px;
+    max-width: 600px;
   }
 }
 
 @media screen and (max-width: 1024px) {
   .container {
-    flex-direction: column-reverse;
-    padding: 0 1.5rem;
-    gap: 2rem;
+    flex-direction: column;
+    padding: 0 1rem;
   }
 
   .content {
@@ -266,16 +284,13 @@
   }
 
   .featureImage {
-    max-width: 70%;
-    margin-right: 0;
+    height: 400px;
+    width: 100%;
+    margin: 2rem auto;
   }
 
   .heading {
     font-size: 2.8rem;
-    text-align: center;
-  }
-
-  .description {
     text-align: center;
   }
 }

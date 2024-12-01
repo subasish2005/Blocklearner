@@ -38,18 +38,15 @@ function SparklesPreview() {
         animate={{ x: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 30, damping: 15 }}
       >
-        <h1>
-           Empowering
-          </h1>
-          <h2> Blockchain Minds to{" "}
+        <h2>
+           Empowering Blockchain Minds to{" "}
           <FlipWords
             words={["Grow", "Innovate", "Engage", "Build", "Learn", "Earn"]}
-            duration={1500}
+            duration={1800}
           />
         </h2>
         <p>
-          Enabling seamless web3 experiences through a suite of AI, digital
-          identity, and blockchain solutions.
+        Welcome to BlockLearner, the ultimate tool for building vibrant and engaging Web3 communities!
         </p>
       </motion.div>
 
@@ -60,8 +57,8 @@ function SparklesPreview() {
         animate={{ x: 0, opacity: 1 }}
         transition={{ type: "spring", stiffness: 40, damping: 15 }}
       >
-        <h1>Hello World</h1>
-        <p>Edit this section later for your content.</p>
+        <h1>Earn, Learn, and Lead in Web3</h1>
+        <p>At BlockLearner, your contributions matter.</p>
       </motion.div>
 
       {/* Trusted Partners Section */}
