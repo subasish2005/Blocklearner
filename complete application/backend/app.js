@@ -106,7 +106,7 @@ app.use(compression());
 
 // Serve static files from the React app
 const frontendPath = process.env.NODE_ENV === 'production'
-  ? '/opt/render/project/src/build'
+  ? path.join(__dirname, 'build')  // Updated path
   : path.join(__dirname, '../frontend/dist');
 
 console.log('\n=== Frontend Configuration ===');
@@ -118,6 +118,7 @@ console.log('===========================\n');
 // Ensure the directory exists
 if (!fs.existsSync(frontendPath)) {
     console.error(`Frontend path does not exist: ${frontendPath}`);
+    console.error('Current directory contents:', fs.readdirSync(__dirname));
     fs.mkdirSync(frontendPath, { recursive: true });
 }
 

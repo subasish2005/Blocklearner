@@ -2,42 +2,8 @@ services:
   - type: web
     name: mern-app
     env: node
-    buildCommand: |
-      echo "Starting build process..."
-      pwd
-      ls -la
-      
-      # Build frontend
-      echo "Building frontend..."
-      cd ../frontend
-      echo "Frontend directory:"
-      pwd
-      ls -la
-      
-      # Install dependencies and build
-      npm install --force
-      CI=false npm run build
-      
-      # Verify build
-      echo "Checking build output..."
-      ls -la dist/
-      
-      # Copy to build directory
-      echo "Copying build files..."
-      mkdir -p /opt/render/project/src/build
-      cp -r dist/* /opt/render/project/src/build/
-      
-      # Verify copy
-      echo "Verifying build directory..."
-      ls -la /opt/render/project/src/build/
-      
-      # Install backend dependencies
-      echo "Installing backend dependencies..."
-      cd ../backend
-      npm install
-      
-      echo "Build process complete"
-    startCommand: node index.js
+    buildCommand: npm install && npm run build
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
