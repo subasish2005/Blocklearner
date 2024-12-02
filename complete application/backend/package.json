@@ -7,10 +7,8 @@
     "dev": "nodemon index.js",
     "test": "jest --watchAll",
     "lint": "eslint .",
-    "format": "prettier --write ."
-  },
-  "engines": {
-    "node": "18.x"
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",

@@ -11,7 +11,7 @@ import StatsWidget from './widgets/StatsWidget';
 import DashboardProgress from './DashboardProgress';
 import './Dashboard.css';
 
-const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
 
 const Dashboard = () => {
   const navigate = useNavigate();
