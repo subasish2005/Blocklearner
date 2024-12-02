@@ -89,8 +89,17 @@ const googleOptions = {
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: `${process.env.BACKEND_URL}/api/v1/auth/google/callback`,
     userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
-    passReqToCallback: true
+    passReqToCallback: true,
+    proxy: true
 };
+
+// Debug log for OAuth configuration
+console.log('OAuth Configuration:', {
+    googleCallbackURL: googleOptions.callbackURL,
+    frontendURL: process.env.FRONTEND_URL,
+    backendURL: process.env.BACKEND_URL,
+    nodeEnv: process.env.NODE_ENV
+});
 
 passport.use(new GoogleStrategy(googleOptions, async (req, accessToken, refreshToken, profile, done) => {
     try {
@@ -140,7 +149,8 @@ const githubOptions = {
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
     callbackURL: `${process.env.BACKEND_URL}/api/v1/auth/github/callback`,
-    scope: ['user:email']
+    scope: ['user:email'],
+    proxy: true
 };
 
 passport.use(new GitHubStrategy(githubOptions, async (accessToken, refreshToken, profile, done) => {
