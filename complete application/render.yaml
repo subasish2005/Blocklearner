@@ -4,6 +4,7 @@ services:
     env: node
     buildCommand: |
       echo "Starting build process..."
+      echo "Current location: $(pwd)"
       
       # Build frontend
       echo "Building frontend..."
@@ -13,33 +14,40 @@ services:
       echo "Frontend build output:"
       ls -la dist/
       
-      # Return to root and verify structure
-      cd ..
-      echo "Root directory structure:"
-      ls -la
-      
       # Setup backend
       echo "Setting up backend..."
-      cd backend
+      cd ../backend
       npm install
       
-      # No need to copy files since we'll serve directly from frontend/dist
+      # Create symbolic link to frontend dist
+      echo "Creating symbolic link to frontend dist..."
+      ln -sfn ../frontend/dist public
+      
       echo "Final directory structure:"
-      echo "Root:"
-      cd ..
       pwd
       ls -la
-      echo "Frontend dist:"
-      ls -la frontend/dist/
-      echo "Backend:"
-      ls -la backend/
+      echo "Public symlink points to:"
+      ls -la public
+      
+      # Verify frontend files are accessible
+      echo "Verifying frontend files..."
+      if [ -f public/index.html ]; then
+        echo "Frontend files accessible through symlink"
+        cat public/index.html | head -n 5
+      else
+        echo "Warning: Frontend files not accessible"
+        echo "Contents of current directory:"
+        ls -la
+        echo "Contents of ../frontend/dist:"
+        ls -la ../frontend/dist
+      fi
     startCommand: |
       cd backend
-      echo "Starting from directory: $(pwd)"
-      echo "Parent directory contents:"
-      ls -la ..
-      echo "Frontend dist contents:"
-      ls -la ../frontend/dist/
+      echo "Starting from: $(pwd)"
+      echo "Directory contents:"
+      ls -la
+      echo "Public symlink contents:"
+      ls -la public/
       NODE_ENV=production node index.js
     envVars:
       - key: NODE_ENV
