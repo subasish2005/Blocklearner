@@ -106,19 +106,19 @@ app.use(compression());
 
 // Serve static files from the React app
 const frontendPath = process.env.NODE_ENV === 'production'
-  ? path.join(__dirname, 'build')  // Updated path
+  ? path.join(__dirname, 'build')  // Simplified path
   : path.join(__dirname, '../frontend/dist');
 
 console.log('\n=== Frontend Configuration ===');
 console.log('Environment:', process.env.NODE_ENV);
 console.log('Frontend Path:', frontendPath);
 console.log('Current Directory:', __dirname);
+console.log('Directory contents:', fs.readdirSync(__dirname));
 console.log('===========================\n');
 
 // Ensure the directory exists
 if (!fs.existsSync(frontendPath)) {
     console.error(`Frontend path does not exist: ${frontendPath}`);
-    console.error('Current directory contents:', fs.readdirSync(__dirname));
     fs.mkdirSync(frontendPath, { recursive: true });
 }
 
@@ -181,7 +181,7 @@ app.all('/api/*', (req, res, next) => {
 // Handle React routing, return all requests to React app
 app.get('*', (req, res) => {
     console.log('\n=== Serving Frontend ===');
-    console.log(`Request URL: ${req.url}`);
+    console.log('Request URL:', req.url);
     
     const indexPath = path.join(frontendPath, 'index.html');
     console.log('Looking for index.html at:', indexPath);
