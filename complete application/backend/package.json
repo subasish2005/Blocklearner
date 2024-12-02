@@ -1,19 +1,19 @@
 {
   "name": "backend-application",
   "version": "1.0.0",
-  "description": "",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "build": "cd ../frontend && npm install && npm run build && mkdir -p ../backend/build && cp -r dist/* ../backend/build/",
     "dev": "nodemon index.js",
     "test": "jest --watchAll",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "prepare": "husky install"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "description": "",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "compression": "^1.7.5",

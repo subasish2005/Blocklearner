@@ -11,7 +11,6 @@ const hpp = require('hpp');
 const path = require('path');
 const session = require('express-session');
 const User = require('./models/user.model');
-const fs = require('fs'); // Added fs module
 
 const errorHandler = require('./middlewares/errorHandler');
 const AppError = require('./utils/appError');
@@ -104,47 +103,13 @@ if (process.env.NODE_ENV === 'development') {
 // Gzip compression
 app.use(compression());
 
-// Serve static files from the React app
-const frontendPath = process.env.NODE_ENV === 'production'
-  ? path.join(__dirname, 'build')  // Local build directory
-  : path.join(__dirname, '../frontend/dist');
-
-console.log('\n=== Frontend Configuration ===');
-console.log('Environment:', process.env.NODE_ENV);
-console.log('Frontend Path:', frontendPath);
-console.log('Current Directory:', __dirname);
-console.log('Current directory contents:', fs.readdirSync(__dirname));
-console.log('===========================\n');
-
-// Ensure the directory exists
-if (!fs.existsSync(frontendPath)) {
-    console.error(`Frontend path does not exist: ${frontendPath}`);
-    console.error('Current directory contents:', fs.readdirSync(__dirname));
-    fs.mkdirSync(frontendPath, { recursive: true });
-    console.log('Build directory created:', frontendPath);
-    console.log('Build directory contents:', fs.readdirSync(frontendPath));
-} else {
-    console.log('Build directory exists:', frontendPath);
-    console.log('Build directory contents:', fs.readdirSync(frontendPath));
-}
-
-// Serve static files with detailed logging
-app.use(express.static(frontendPath, {
-    maxAge: '1h',
-    fallthrough: true,
-    index: false,
-    setHeaders: (res, path) => {
-        console.log('Serving static file:', path);
-    }
-}));
-
-// API Routes
+// Mount API routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/friends', friendRoutes);
-app.use('/api/v1/gamified-tasks', gamifiedTaskRoutes);
+app.use('/api/v1/tasks', gamifiedTaskRoutes);
 
 console.log('\n=== Registered Routes ===');
 
@@ -174,7 +139,7 @@ console.log('\nFriend Routes:');
 listEndpoints(friendRoutes, '/api/v1/friends');
 
 console.log('\nTask Routes:');
-listEndpoints(gamifiedTaskRoutes, '/api/v1/gamified-tasks');
+listEndpoints(gamifiedTaskRoutes, '/api/v1/tasks');
 
 // API 404 handler - Only for /api routes
 app.all('/api/*', (req, res, next) => {
@@ -184,28 +149,13 @@ app.all('/api/*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// Handle React routing, return all requests to React app
+// Serve static files from the React app
+const frontendPath = path.join(__dirname, '../../frontend/subasishforntend/dist');
+app.use(express.static(frontendPath));
+
+// Handle React routing
 app.get('*', (req, res) => {
-    console.log('\n=== Serving Frontend ===');
-    console.log('Request URL:', req.url);
-    
-    const indexPath = path.join(frontendPath, 'index.html');
-    console.log('Looking for index.html at:', indexPath);
-    
-    try {
-        if (fs.existsSync(indexPath)) {
-            console.log('Found index.html, serving...');
-            res.sendFile(indexPath);
-        } else {
-            console.error('index.html not found!');
-            console.log('Build directory contents:', fs.readdirSync(frontendPath));
-            res.status(404).send('Frontend build not found. Please ensure the application is built correctly.');
-        }
-    } catch (error) {
-        console.error('Error serving frontend:', error);
-        console.error(error);
-        res.status(500).send('Error serving frontend application.');
-    }
+    res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 // Global error handler
