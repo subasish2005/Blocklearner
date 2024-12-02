@@ -3,8 +3,10 @@ services:
     name: mern-app
     env: node
     buildCommand: |
-      cd ../../complete\ application/frontend && npm install && npm run build
-      cd ../backend && npm install
+      mkdir -p "/opt/render/project/src/frontend-dist"
+      cd "../../complete application/frontend" && npm install && npm run build
+      cp -r dist/* "/opt/render/project/src/frontend-dist/"
+      cd "../backend" && npm install
     startCommand: node index.js
     envVars:
       - key: NODE_ENV
