@@ -153,13 +153,18 @@ app.all('/api/*', (req, res, next) => {
 // Production configuration
 if (process.env.NODE_ENV === 'production') {
     const publicPath = path.join(__dirname, 'public');
-    console.log('Serving static files from:', publicPath);
     
-    // Serve static files
+    // Create public directory if it doesn't exist
+    if (!fs.existsSync(publicPath)) {
+        console.log('Creating public directory at:', publicPath);
+        fs.mkdirSync(publicPath, { recursive: true });
+    }
+    
+    console.log('Serving static files from:', publicPath);
     app.use(express.static(publicPath));
     
     // Handle React routing
-    app.get('*', (req, res) => {
+    app.get('*', (req, res, next) => {
         // Skip API routes
         if (req.url.startsWith('/api')) {
             return next();
@@ -168,24 +173,33 @@ if (process.env.NODE_ENV === 'production') {
         const indexPath = path.join(publicPath, 'index.html');
         console.log('Serving index.html from:', indexPath);
         
-        try {
-            if (fs.existsSync(indexPath)) {
-                res.sendFile(indexPath);
-            } else {
-                console.error('index.html not found at:', indexPath);
-                console.error('Directory contents:', fs.readdirSync(publicPath));
-                res.status(404).json({
-                    status: 'error',
-                    message: 'Frontend files not found'
-                });
+        // Check if index.html exists
+        if (!fs.existsSync(indexPath)) {
+            console.error('index.html not found. Checking parent directories...');
+            
+            // Try to find frontend files in parent directory
+            const parentFrontendPath = path.join(__dirname, '../frontend/dist');
+            console.log('Checking parent frontend path:', parentFrontendPath);
+            
+            if (fs.existsSync(path.join(parentFrontendPath, 'index.html'))) {
+                console.log('Found frontend files in parent directory, copying...');
+                try {
+                    // Copy all files from frontend/dist to public
+                    fs.cpSync(parentFrontendPath, publicPath, { recursive: true });
+                    console.log('Successfully copied frontend files to public directory');
+                    return res.sendFile(indexPath);
+                } catch (err) {
+                    console.error('Error copying frontend files:', err);
+                }
             }
-        } catch (err) {
-            console.error('Error serving index.html:', err);
-            res.status(500).json({
+            
+            return res.status(404).json({
                 status: 'error',
-                message: 'Internal server error'
+                message: 'Frontend files not found'
             });
         }
+        
+        res.sendFile(indexPath);
     });
 }
 

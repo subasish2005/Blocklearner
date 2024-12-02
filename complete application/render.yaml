@@ -4,7 +4,7 @@ services:
     env: node
     buildCommand: |
       echo "Starting build process..."
-      echo "Current location: $(pwd)"
+      echo "Current directory: $(pwd)"
       
       # Build frontend
       echo "Building frontend..."
@@ -19,30 +19,31 @@ services:
       cd ../backend
       npm install
       
-      # Ensure public directory exists and is empty
-      rm -rf public
+      # Create public directory and copy frontend files
+      echo "Setting up public directory..."
       mkdir -p public
-      
-      # Copy frontend files to backend/public
       echo "Copying frontend files..."
       cp -r ../frontend/dist/* public/
       
-      echo "Verifying backend/public contents:"
+      echo "Verifying setup..."
+      echo "Backend directory structure:"
+      ls -la
+      echo "Public directory contents:"
       ls -la public/
       
       # Verify index.html exists
       if [ -f public/index.html ]; then
         echo " Frontend files successfully copied"
-        echo "Contents of index.html:"
-        head -n 5 public/index.html
       else
-        echo " ERROR: index.html not found in public directory"
-        echo "Build process failed - frontend files not copied correctly"
+        echo " ERROR: Frontend files not copied correctly"
+        echo "Build process failed"
         exit 1
       fi
     startCommand: |
       cd backend
       echo "Starting from $(pwd)"
+      echo "Directory contents:"
+      ls -la
       echo "Public directory contents:"
       ls -la public/
       NODE_ENV=production node index.js
