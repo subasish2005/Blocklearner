@@ -2,7 +2,29 @@ services:
   - type: web
     name: mern-app
     env: node
-    buildCommand: npm install && npm run build
+    buildCommand: |
+      echo "Starting build process..."
+      # First, build the frontend
+      cd ../frontend
+      echo "Installing frontend dependencies..."
+      npm install --force
+      echo "Building frontend..."
+      npm run build
+      echo "Frontend build complete. Contents:"
+      ls -la dist/
+      
+      # Now setup backend
+      cd ../backend
+      echo "Installing backend dependencies..."
+      npm install
+      echo "Creating build directory..."
+      mkdir -p build
+      echo "Copying frontend files..."
+      cp -r ../frontend/dist/* build/
+      echo "Verifying build directory..."
+      ls -la build/
+      
+      echo "Build process complete"
     startCommand: npm start
     envVars:
       - key: NODE_ENV

@@ -106,14 +106,14 @@ app.use(compression());
 
 // Serve static files from the React app
 const frontendPath = process.env.NODE_ENV === 'production'
-  ? path.join(__dirname, 'build')  // Simplified path
+  ? path.join(__dirname, 'build')  // Local build directory
   : path.join(__dirname, '../frontend/dist');
 
 console.log('\n=== Frontend Configuration ===');
 console.log('Environment:', process.env.NODE_ENV);
 console.log('Frontend Path:', frontendPath);
 console.log('Current Directory:', __dirname);
-console.log('Directory contents:', fs.readdirSync(__dirname));
+console.log('Current directory contents:', fs.readdirSync(__dirname));
 console.log('===========================\n');
 
 // Ensure the directory exists
@@ -192,11 +192,12 @@ app.get('*', (req, res) => {
             res.sendFile(indexPath);
         } else {
             console.error('index.html not found!');
-            console.log('Directory contents:', fs.readdirSync(frontendPath));
+            console.log('Build directory contents:', fs.readdirSync(frontendPath));
             res.status(404).send('Frontend build not found. Please ensure the application is built correctly.');
         }
     } catch (error) {
         console.error('Error serving frontend:', error);
+        console.error(error);
         res.status(500).send('Error serving frontend application.');
     }
 });
