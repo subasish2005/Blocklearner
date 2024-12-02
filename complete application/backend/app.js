@@ -155,28 +155,38 @@ if (process.env.NODE_ENV === 'production') {
     // Try multiple possible locations for the frontend files
     const possiblePaths = [
         path.join(__dirname, 'public'),
-        path.join(__dirname, '../frontend/dist')
+        path.join(__dirname, '../frontend/dist'),
+        path.join(process.cwd(), '../frontend/dist'),
+        path.join(process.cwd(), 'public')
     ];
 
+    console.log('Current directory:', process.cwd());
+    console.log('__dirname:', __dirname);
     console.log('Checking possible frontend paths:', possiblePaths);
     
     let publicPath = null;
     for (const p of possiblePaths) {
-        if (fs.existsSync(p)) {
-            publicPath = p;
-            console.log('Found frontend files at:', publicPath);
-            break;
+        console.log('Checking path:', p);
+        try {
+            if (fs.existsSync(p)) {
+                const files = fs.readdirSync(p);
+                if (files.includes('index.html')) {
+                    publicPath = p;
+                    console.log('Found frontend files at:', publicPath);
+                    break;
+                }
+            }
+        } catch (err) {
+            console.log('Error checking path:', p, err.message);
         }
     }
 
-    if (!publicPath) {
-        console.error('No frontend files found in any of the possible locations');
-        console.error('Directory contents:', fs.readdirSync(__dirname));
-        throw new Error('Frontend files not found');
+    if (publicPath) {
+        console.log('Serving static files from:', publicPath);
+        app.use(express.static(publicPath));
+    } else {
+        console.warn('No frontend files found. Server will only handle API requests.');
     }
-    
-    // Serve static files from the found directory
-    app.use(express.static(publicPath));
     
     // Handle React routing
     app.get('*', (req, res, next) => {
@@ -184,6 +194,14 @@ if (process.env.NODE_ENV === 'production') {
         if (req.url.startsWith('/api')) {
             return next();
         }
+
+        if (!publicPath) {
+            return res.status(404).json({
+                status: 'error',
+                message: 'Frontend not yet deployed. Please try again later.'
+            });
+        }
+
         const indexPath = path.join(publicPath, 'index.html');
         console.log('Attempting to serve index from:', indexPath);
         
@@ -195,11 +213,17 @@ if (process.env.NODE_ENV === 'production') {
                 console.error('Directory structure:');
                 console.error('Selected public path:', publicPath);
                 console.error('Public directory contents:', fs.readdirSync(publicPath));
-                res.status(404).send('Frontend not built properly');
+                res.status(404).json({
+                    status: 'error',
+                    message: 'Frontend files not found. Please try again later.'
+                });
             }
         } catch (err) {
             console.error('Error serving index.html:', err);
-            res.status(500).send('Server error');
+            res.status(500).json({
+                status: 'error',
+                message: 'Server error while serving frontend files.'
+            });
         }
     });
 }
