@@ -3,40 +3,27 @@ services:
     name: blocklearner-backend
     env: node
     buildCommand: |
-      echo "Starting build process..."
-      echo "Current directory structure:"
-      ls -la
-      
-      echo "Building frontend..."
+      # Build frontend
       cd frontend
       npm install
       npm run build
-      echo "Frontend build complete. Contents of dist:"
-      ls -la dist/
       
-      echo "Setting up backend..."
+      # Setup backend
       cd ../backend
       npm install
       
-      echo "Setting up directory structure..."
-      BACKEND_DIR="$PWD"
-      PUBLIC_DIR="$BACKEND_DIR/public"
+      # Create public directory and copy files
+      rm -rf public
+      mkdir public
+      cp -r ../frontend/dist/* public/
       
-      echo "Creating public directory at $PUBLIC_DIR"
-      rm -rf "$PUBLIC_DIR"
-      mkdir -p "$PUBLIC_DIR"
-      
-      echo "Copying frontend files..."
-      cp -rv "../frontend/dist/"* "$PUBLIC_DIR/"
-      
-      echo "Final directory structure:"
-      ls -la "$PUBLIC_DIR"
-      echo "Current path: $PWD"
-    startCommand: |
-      cd backend
-      echo "Starting server from $(pwd)"
+      # Verify the setup
+      echo "Backend directory structure:"
+      pwd
+      ls -la
+      echo "Public directory contents:"
       ls -la public/
-      NODE_ENV=production node index.js
+    startCommand: cd backend && NODE_ENV=production node index.js
     envVars:
       - key: NODE_ENV
         value: production
