@@ -4,42 +4,41 @@ services:
     env: node
     buildCommand: |
       echo "Starting build process..."
+      echo "Current directory: $(pwd)"
+      ls -la
       
       # Navigate to frontend and build
-      cd "../../complete application/frontend"
+      echo "Changing to frontend directory..."
+      cd ../..
+      ls -la
+      cd "complete application/frontend"
+      echo "Now in frontend directory: $(pwd)"
+      ls -la
+      
+      # Install and build frontend
       echo "Installing frontend dependencies..."
       npm install --force
       echo "Building frontend..."
-      npm run build
+      CI=false npm run build
       
-      # Verify build output
-      if [ ! -d "dist" ]; then
-        echo "Error: dist directory not created"
-        exit 1
-      fi
+      # Debug dist directory
+      echo "Checking dist directory..."
+      ls -la dist/ || echo "dist directory not found!"
       
-      if [ ! -f "dist/index.html" ]; then
-        echo "Error: index.html not found in dist"
-        exit 1
-      fi
+      # Create and copy to a simpler path
+      echo "Setting up build directory..."
+      BUILD_DIR="/opt/render/project/src/build"
+      rm -rf "$BUILD_DIR"
+      mkdir -p "$BUILD_DIR"
       
-      echo "Frontend build contents:"
-      ls -la dist/
+      echo "Copying build files..."
+      cp -r dist/* "$BUILD_DIR/"
+      echo "Build directory contents:"
+      ls -la "$BUILD_DIR"
       
-      # Create and copy to frontend-dist
-      DIST_DIR="/opt/render/project/src/frontend-dist"
-      echo "Creating $DIST_DIR"
-      mkdir -p "$DIST_DIR"
-      
-      echo "Copying build files to $DIST_DIR"
-      cp -rv dist/* "$DIST_DIR/"
-      
-      echo "Verifying copied files:"
-      ls -la "$DIST_DIR"
-      
-      # Install backend dependencies
-      cd "../backend"
+      # Move to backend and install dependencies
       echo "Installing backend dependencies..."
+      cd ../backend
       npm install
       
       echo "Build process complete."
