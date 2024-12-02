@@ -149,14 +149,20 @@ app.all('/api/*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// Serve static files from the React app
-const frontendPath = path.join(__dirname, '../../frontend/subasishforntend/dist');
-app.use(express.static(frontendPath));
-
-// Handle React routing
-app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-});
+// Production configuration
+if (process.env.NODE_ENV === 'production') {
+    // Serve static files from React build
+    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+    
+    // Handle React routing
+    app.get('*', (req, res, next) => {
+        // Skip API routes
+        if (req.url.startsWith('/api')) {
+            return next();
+        }
+        res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+    });
+}
 
 // Global error handler
 app.use(errorHandler);

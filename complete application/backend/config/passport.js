@@ -83,11 +83,20 @@ passport.deserializeUser(async (id, done) => {
     }
 });
 
+// Configure callback URLs based on environment
+const GOOGLE_CALLBACK_URL = process.env.NODE_ENV === 'production'
+    ? `${process.env.BACKEND_URL}/api/v1/auth/google/callback`
+    : 'http://localhost:3000/api/v1/auth/google/callback';
+
+const GITHUB_CALLBACK_URL = process.env.NODE_ENV === 'production'
+    ? `${process.env.BACKEND_URL}/api/v1/auth/github/callback`
+    : 'http://localhost:3000/api/v1/auth/github/callback';
+
 // Google OAuth Strategy
 const googleOptions = {
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: `${process.env.BACKEND_URL}/api/v1/auth/google/callback`,
+    callbackURL: GOOGLE_CALLBACK_URL,
     userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
     passReqToCallback: true
 };
@@ -139,7 +148,7 @@ passport.use(new GoogleStrategy(googleOptions, async (req, accessToken, refreshT
 const githubOptions = {
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
-    callbackURL: `${process.env.BACKEND_URL}/api/v1/auth/github/callback`,
+    callbackURL: GITHUB_CALLBACK_URL,
     scope: ['user:email']
 };
 
