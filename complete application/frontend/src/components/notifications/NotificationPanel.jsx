@@ -4,8 +4,9 @@ import { apiService } from '../../services/api.service';
 import { io } from 'socket.io-client';
 import './NotificationPanel.css';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const BACKEND_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
+// eslint-disable-next-line no-unused-vars, react/prop-types
 const NotificationPanel = ({ isOpen, onClose, togglePanel }) => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(false);
