@@ -111,9 +111,24 @@ app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/friends', friendRoutes);
 app.use('/api/v1/tasks', gamifiedTaskRoutes);
 
+// Welcome route
+app.get('/', (req, res) => {
+    res.status(200).json({
+        status: 'success',
+        message: 'Welcome to Blocklearner API',
+        documentation: '/api/v1/docs',
+        healthCheck: '/health',
+        version: '1.0.0'
+    });
+});
+
 // Health check route
 app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'success', message: 'Server is running' });
+    res.status(200).json({ 
+        status: 'success', 
+        message: 'Server is running',
+        timestamp: new Date().toISOString()
+    });
 });
 
 // Handle undefined routes
