@@ -151,8 +151,11 @@ app.all('/api/*', (req, res, next) => {
 
 // Production configuration
 if (process.env.NODE_ENV === 'production') {
+    const publicPath = path.join(process.cwd(), 'public');
+    console.log('Serving static files from:', publicPath);
+    
     // Serve static files from public directory
-    app.use(express.static(path.join(__dirname, 'public')));
+    app.use(express.static(publicPath));
     
     // Handle React routing
     app.get('*', (req, res, next) => {
@@ -160,7 +163,9 @@ if (process.env.NODE_ENV === 'production') {
         if (req.url.startsWith('/api')) {
             return next();
         }
-        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+        const indexPath = path.join(publicPath, 'index.html');
+        console.log('Attempting to serve:', indexPath);
+        res.sendFile(indexPath);
     });
 }
 
