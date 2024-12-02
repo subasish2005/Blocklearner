@@ -11,6 +11,7 @@ const hpp = require('hpp');
 const path = require('path');
 const session = require('express-session');
 const User = require('./models/user.model');
+const fs = require('fs'); // Added fs module
 
 const errorHandler = require('./middlewares/errorHandler');
 const AppError = require('./utils/appError');
@@ -105,9 +106,12 @@ app.use(compression());
 
 // Serve static files from the React app
 const frontendPath = process.env.NODE_ENV === 'production'
-  ? '/opt/render/project/src/complete application/frontend/dist'
-  : path.join(__dirname, '../../complete application/frontend/dist');
+  ? '/opt/render/project/src/frontend-dist'
+  : path.join(__dirname, '../../complete-application/frontend/dist');
 
+console.log('Frontend Path:', frontendPath);
+
+// Serve static files
 app.use(express.static(frontendPath));
 
 // API Routes
@@ -160,8 +164,18 @@ app.all('/api/*', (req, res, next) => {
 app.get('*', (req, res) => {
     console.log('\n=== Serving Frontend ===');
     console.log(`Serving index.html from: ${frontendPath}`);
-    console.log('======================\n');
-    res.sendFile(path.join(frontendPath, 'index.html'));
+    console.log('Request URL:', req.url);
+    
+    const indexPath = path.join(frontendPath, 'index.html');
+    console.log('Full index.html path:', indexPath);
+    
+    // Check if file exists
+    if (fs.existsSync(indexPath)) {
+        res.sendFile(indexPath);
+    } else {
+        console.error('index.html not found at:', indexPath);
+        res.status(404).send('Frontend build not found');
+    }
 });
 
 // Global error handler
