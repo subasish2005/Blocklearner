@@ -119,7 +119,13 @@ console.log('===========================\n');
 // Ensure the directory exists
 if (!fs.existsSync(frontendPath)) {
     console.error(`Frontend path does not exist: ${frontendPath}`);
+    console.error('Current directory contents:', fs.readdirSync(__dirname));
     fs.mkdirSync(frontendPath, { recursive: true });
+    console.log('Build directory created:', frontendPath);
+    console.log('Build directory contents:', fs.readdirSync(frontendPath));
+} else {
+    console.log('Build directory exists:', frontendPath);
+    console.log('Build directory contents:', fs.readdirSync(frontendPath));
 }
 
 // Serve static files with detailed logging
