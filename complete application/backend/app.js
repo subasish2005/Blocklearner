@@ -107,12 +107,25 @@ app.use(compression());
 // Serve static files from the React app
 const frontendPath = process.env.NODE_ENV === 'production'
   ? '/opt/render/project/src/frontend-dist'
-  : path.join(__dirname, '../../complete-application/frontend/dist');
+  : path.join(__dirname, '../../complete application/frontend/dist');
 
+console.log('\n=== Frontend Configuration ===');
+console.log('Environment:', process.env.NODE_ENV);
 console.log('Frontend Path:', frontendPath);
+console.log('===========================\n');
+
+// Check if frontend path exists
+if (!fs.existsSync(frontendPath)) {
+    console.error(`Frontend path does not exist: ${frontendPath}`);
+    fs.mkdirSync(frontendPath, { recursive: true });
+}
 
 // Serve static files
-app.use(express.static(frontendPath));
+app.use(express.static(frontendPath, {
+    maxAge: '1h',
+    fallthrough: true,
+    index: false // Disable automatic index.html serving
+}));
 
 // API Routes
 app.use('/api/v1/auth', authRoutes);
@@ -163,18 +176,23 @@ app.all('/api/*', (req, res, next) => {
 // Handle React routing, return all requests to React app
 app.get('*', (req, res) => {
     console.log('\n=== Serving Frontend ===');
-    console.log(`Serving index.html from: ${frontendPath}`);
-    console.log('Request URL:', req.url);
+    console.log(`Request URL: ${req.url}`);
     
     const indexPath = path.join(frontendPath, 'index.html');
-    console.log('Full index.html path:', indexPath);
+    console.log('Looking for index.html at:', indexPath);
     
-    // Check if file exists
-    if (fs.existsSync(indexPath)) {
-        res.sendFile(indexPath);
-    } else {
-        console.error('index.html not found at:', indexPath);
-        res.status(404).send('Frontend build not found');
+    try {
+        if (fs.existsSync(indexPath)) {
+            console.log('Found index.html, serving...');
+            res.sendFile(indexPath);
+        } else {
+            console.error('index.html not found!');
+            console.log('Directory contents:', fs.readdirSync(frontendPath));
+            res.status(404).send('Frontend build not found. Please ensure the application is built correctly.');
+        }
+    } catch (error) {
+        console.error('Error serving frontend:', error);
+        res.status(500).send('Error serving frontend application.');
     }
 });
 

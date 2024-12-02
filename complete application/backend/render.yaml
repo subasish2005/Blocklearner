@@ -4,21 +4,44 @@ services:
     env: node
     buildCommand: |
       echo "Starting build process..."
-      echo "Current directory: $(pwd)"
+      
+      # Navigate to frontend and build
       cd "../../complete application/frontend"
       echo "Installing frontend dependencies..."
-      npm install
+      npm install --force
       echo "Building frontend..."
       npm run build
-      echo "Frontend build complete. Contents of dist directory:"
+      
+      # Verify build output
+      if [ ! -d "dist" ]; then
+        echo "Error: dist directory not created"
+        exit 1
+      fi
+      
+      if [ ! -f "dist/index.html" ]; then
+        echo "Error: index.html not found in dist"
+        exit 1
+      fi
+      
+      echo "Frontend build contents:"
       ls -la dist/
-      echo "Creating frontend-dist directory..."
-      mkdir -p "/opt/render/project/src/frontend-dist"
-      echo "Copying build files..."
-      cp -r dist/* "/opt/render/project/src/frontend-dist/"
-      echo "Installing backend dependencies..."
+      
+      # Create and copy to frontend-dist
+      DIST_DIR="/opt/render/project/src/frontend-dist"
+      echo "Creating $DIST_DIR"
+      mkdir -p "$DIST_DIR"
+      
+      echo "Copying build files to $DIST_DIR"
+      cp -rv dist/* "$DIST_DIR/"
+      
+      echo "Verifying copied files:"
+      ls -la "$DIST_DIR"
+      
+      # Install backend dependencies
       cd "../backend"
+      echo "Installing backend dependencies..."
       npm install
+      
       echo "Build process complete."
     startCommand: node index.js
     envVars:
