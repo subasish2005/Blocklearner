@@ -4,44 +4,39 @@ services:
     env: node
     buildCommand: |
       echo "Starting build process..."
-      echo "Current directory: $(pwd)"
+      pwd
       ls -la
       
-      # Navigate to frontend and build
-      echo "Changing to frontend directory..."
-      cd ../..
-      ls -la
-      cd "complete application/frontend"
-      echo "Now in frontend directory: $(pwd)"
-      ls -la
-      
-      # Install and build frontend
-      echo "Installing frontend dependencies..."
-      npm install --force
+      # Build frontend
       echo "Building frontend..."
+      cd ../frontend
+      echo "Frontend directory:"
+      pwd
+      ls -la
+      
+      # Install dependencies and build
+      npm install --force
       CI=false npm run build
       
-      # Debug dist directory
-      echo "Checking dist directory..."
-      ls -la dist/ || echo "dist directory not found!"
+      # Verify build
+      echo "Checking build output..."
+      ls -la dist/
       
-      # Create and copy to a simpler path
-      echo "Setting up build directory..."
-      BUILD_DIR="/opt/render/project/src/build"
-      rm -rf "$BUILD_DIR"
-      mkdir -p "$BUILD_DIR"
-      
+      # Copy to build directory
       echo "Copying build files..."
-      cp -r dist/* "$BUILD_DIR/"
-      echo "Build directory contents:"
-      ls -la "$BUILD_DIR"
+      mkdir -p /opt/render/project/src/build
+      cp -r dist/* /opt/render/project/src/build/
       
-      # Move to backend and install dependencies
+      # Verify copy
+      echo "Verifying build directory..."
+      ls -la /opt/render/project/src/build/
+      
+      # Install backend dependencies
       echo "Installing backend dependencies..."
       cd ../backend
       npm install
       
-      echo "Build process complete."
+      echo "Build process complete"
     startCommand: node index.js
     envVars:
       - key: NODE_ENV
