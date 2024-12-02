@@ -152,77 +152,38 @@ app.all('/api/*', (req, res, next) => {
 
 // Production configuration
 if (process.env.NODE_ENV === 'production') {
-    // Try multiple possible locations for the frontend files
-    const possiblePaths = [
-        path.join(__dirname, 'public'),
-        path.join(__dirname, '../frontend/dist'),
-        path.join(process.cwd(), '../frontend/dist'),
-        path.join(process.cwd(), 'public')
-    ];
-
-    console.log('Current directory:', process.cwd());
-    console.log('__dirname:', __dirname);
-    console.log('Checking possible frontend paths:', possiblePaths);
+    const publicPath = path.join(__dirname, 'public');
+    console.log('Serving static files from:', publicPath);
     
-    let publicPath = null;
-    for (const p of possiblePaths) {
-        console.log('Checking path:', p);
-        try {
-            if (fs.existsSync(p)) {
-                const files = fs.readdirSync(p);
-                if (files.includes('index.html')) {
-                    publicPath = p;
-                    console.log('Found frontend files at:', publicPath);
-                    break;
-                }
-            }
-        } catch (err) {
-            console.log('Error checking path:', p, err.message);
-        }
-    }
-
-    if (publicPath) {
-        console.log('Serving static files from:', publicPath);
-        app.use(express.static(publicPath));
-    } else {
-        console.warn('No frontend files found. Server will only handle API requests.');
-    }
+    // Serve static files
+    app.use(express.static(publicPath));
     
     // Handle React routing
-    app.get('*', (req, res, next) => {
+    app.get('*', (req, res) => {
         // Skip API routes
         if (req.url.startsWith('/api')) {
             return next();
         }
 
-        if (!publicPath) {
-            return res.status(404).json({
-                status: 'error',
-                message: 'Frontend not yet deployed. Please try again later.'
-            });
-        }
-
         const indexPath = path.join(publicPath, 'index.html');
-        console.log('Attempting to serve index from:', indexPath);
+        console.log('Serving index.html from:', indexPath);
         
         try {
             if (fs.existsSync(indexPath)) {
-                console.log('Found index.html, serving...');
                 res.sendFile(indexPath);
             } else {
-                console.error('Directory structure:');
-                console.error('Selected public path:', publicPath);
-                console.error('Public directory contents:', fs.readdirSync(publicPath));
+                console.error('index.html not found at:', indexPath);
+                console.error('Directory contents:', fs.readdirSync(publicPath));
                 res.status(404).json({
                     status: 'error',
-                    message: 'Frontend files not found. Please try again later.'
+                    message: 'Frontend files not found'
                 });
             }
         } catch (err) {
             console.error('Error serving index.html:', err);
             res.status(500).json({
                 status: 'error',
-                message: 'Server error while serving frontend files.'
+                message: 'Internal server error'
             });
         }
     });

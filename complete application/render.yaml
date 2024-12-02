@@ -19,34 +19,31 @@ services:
       cd ../backend
       npm install
       
-      # Create symbolic link to frontend dist
-      echo "Creating symbolic link to frontend dist..."
-      ln -sfn ../frontend/dist public
+      # Ensure public directory exists and is empty
+      rm -rf public
+      mkdir -p public
       
-      echo "Final directory structure:"
-      pwd
-      ls -la
-      echo "Public symlink points to:"
-      ls -la public
+      # Copy frontend files to backend/public
+      echo "Copying frontend files..."
+      cp -r ../frontend/dist/* public/
       
-      # Verify frontend files are accessible
-      echo "Verifying frontend files..."
+      echo "Verifying backend/public contents:"
+      ls -la public/
+      
+      # Verify index.html exists
       if [ -f public/index.html ]; then
-        echo "Frontend files accessible through symlink"
-        cat public/index.html | head -n 5
+        echo " Frontend files successfully copied"
+        echo "Contents of index.html:"
+        head -n 5 public/index.html
       else
-        echo "Warning: Frontend files not accessible"
-        echo "Contents of current directory:"
-        ls -la
-        echo "Contents of ../frontend/dist:"
-        ls -la ../frontend/dist
+        echo " ERROR: index.html not found in public directory"
+        echo "Build process failed - frontend files not copied correctly"
+        exit 1
       fi
     startCommand: |
       cd backend
-      echo "Starting from: $(pwd)"
-      echo "Directory contents:"
-      ls -la
-      echo "Public symlink contents:"
+      echo "Starting from $(pwd)"
+      echo "Public directory contents:"
       ls -la public/
       NODE_ENV=production node index.js
     envVars:
