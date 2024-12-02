@@ -7,23 +7,35 @@ services:
       cd frontend
       npm install
       npm run build
+      echo "Frontend build output:"
+      ls -la dist/
       
       # Setup backend
       cd ../backend
       npm install
       
       # Create public directory and copy files
+      echo "Creating public directory in $(pwd)"
       rm -rf public
-      mkdir public
+      mkdir -p public
+      echo "Copying files from ../frontend/dist to $(pwd)/public"
       cp -r ../frontend/dist/* public/
       
       # Verify the setup
-      echo "Backend directory structure:"
-      pwd
+      echo "Backend directory contents:"
       ls -la
       echo "Public directory contents:"
       ls -la public/
-    startCommand: cd backend && NODE_ENV=production node index.js
+      echo "Current working directory: $(pwd)"
+      echo "Public directory absolute path: $(realpath public)"
+    startCommand: |
+      cd backend
+      echo "Starting from directory: $(pwd)"
+      echo "Contents of current directory:"
+      ls -la
+      echo "Contents of public directory:"
+      ls -la public/
+      NODE_ENV=production node index.js
     envVars:
       - key: NODE_ENV
         value: production
