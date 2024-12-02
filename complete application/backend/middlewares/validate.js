@@ -1,6 +1,6 @@
 const Joi = require('joi');
 const { validationResult } = require('express-validator');
-const AppError = require('../utils/AppError');
+const AppError = require('../utils/appError');
 
 /**
  * Validate request data against a Joi schema

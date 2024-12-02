@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user.model');
 const Activity = require('../models/activity.model');
-const AppError = require('../utils/AppError');
+const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 const { filterObj } = require('../utils/helpers');
 
