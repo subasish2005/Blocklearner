@@ -103,13 +103,26 @@ if (process.env.NODE_ENV === 'development') {
 // Gzip compression
 app.use(compression());
 
-// Mount API routes
+// API routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/friends', friendRoutes);
 app.use('/api/v1/tasks', gamifiedTaskRoutes);
+
+// Health check route
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'success', message: 'Server is running' });
+});
+
+// Handle undefined routes
+app.all('*', (req, res, next) => {
+    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+});
+
+// Error handling middleware
+app.use(errorHandler);
 
 console.log('\n=== Registered Routes ===');
 
@@ -141,43 +154,32 @@ listEndpoints(friendRoutes, '/api/v1/friends');
 console.log('\nTask Routes:');
 listEndpoints(gamifiedTaskRoutes, '/api/v1/tasks');
 
-// API 404 handler - Only for /api routes
-app.all('/api/*', (req, res, next) => {
-    console.log('\n=== 404 Route Handler ===');
-    console.log(`${req.method} ${req.url} - Not Found`);
-    console.log('======================\n');
-    next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
-});
-
-// Serve static files from the React app
-const frontendPath = path.join(__dirname, '../../frontend/subasishforntend/dist');
-app.use(express.static(frontendPath));
-
-// Handle React routing
-app.get('*', (req, res) => {
-    res.sendFile(path.join(frontendPath, 'index.html'));
-});
-
-// Global error handler
-app.use(errorHandler);
-
 // Database connection
 mongoose.connect(process.env.MONGODB_URI)
 .then(() => console.log('Database connection successful'))
 .catch((err) => {
     console.error('Database connection error:', err);
-    process.exit(1);
+    // Exit only in development, let the process manager handle restarts in production
+    if (process.env.NODE_ENV === 'development') {
+        process.exit(1);
+    }
 });
 
-// Error handlers
+// Global error handlers for uncaught errors
 process.on('unhandledRejection', (err) => {
-    console.error('UNHANDLED REJECTION! Error details:');
-    console.error(err);
+    console.error('UNHANDLED REJECTION! Error details:', err);
+    // Log the error but don't exit in production
+    if (process.env.NODE_ENV === 'development') {
+        process.exit(1);
+    }
 });
 
 process.on('uncaughtException', (err) => {
-    console.error('UNCAUGHT EXCEPTION! Error details:');
-    console.error(err);
+    console.error('UNCAUGHT EXCEPTION! Error details:', err);
+    // Log the error but don't exit in production
+    if (process.env.NODE_ENV === 'development') {
+        process.exit(1);
+    }
 });
 
 module.exports = app;
