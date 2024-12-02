@@ -152,15 +152,30 @@ app.all('/api/*', (req, res, next) => {
 
 // Production configuration
 if (process.env.NODE_ENV === 'production') {
-    // In production, use __dirname to ensure correct path resolution
-    const publicPath = path.join(__dirname, 'public');
-    console.log('Environment:', {
-        cwd: process.cwd(),
-        publicPath,
-        dirname: __dirname
-    });
+    // Try multiple possible locations for the frontend files
+    const possiblePaths = [
+        path.join(__dirname, 'public'),
+        path.join(__dirname, '../frontend/dist')
+    ];
+
+    console.log('Checking possible frontend paths:', possiblePaths);
     
-    // Serve static files from public directory
+    let publicPath = null;
+    for (const p of possiblePaths) {
+        if (fs.existsSync(p)) {
+            publicPath = p;
+            console.log('Found frontend files at:', publicPath);
+            break;
+        }
+    }
+
+    if (!publicPath) {
+        console.error('No frontend files found in any of the possible locations');
+        console.error('Directory contents:', fs.readdirSync(__dirname));
+        throw new Error('Frontend files not found');
+    }
+    
+    // Serve static files from the found directory
     app.use(express.static(publicPath));
     
     // Handle React routing
@@ -178,12 +193,8 @@ if (process.env.NODE_ENV === 'production') {
                 res.sendFile(indexPath);
             } else {
                 console.error('Directory structure:');
-                console.error('public directory exists:', fs.existsSync(publicPath));
-                if (fs.existsSync(publicPath)) {
-                    console.error('public directory contents:', fs.readdirSync(publicPath));
-                }
-                console.error('Absolute public path:', path.resolve(publicPath));
-                console.error('Directory listing of parent:', fs.readdirSync(path.dirname(publicPath)));
+                console.error('Selected public path:', publicPath);
+                console.error('Public directory contents:', fs.readdirSync(publicPath));
                 res.status(404).send('Frontend not built properly');
             }
         } catch (err) {
