@@ -151,8 +151,8 @@ app.all('/api/*', (req, res, next) => {
 
 // Production configuration
 if (process.env.NODE_ENV === 'production') {
-    // Serve static files from React build
-    app.use(express.static(path.join(__dirname, '../frontend/dist')));
+    // Serve static files from public directory
+    app.use(express.static(path.join(__dirname, 'public')));
     
     // Handle React routing
     app.get('*', (req, res, next) => {
@@ -160,7 +160,7 @@ if (process.env.NODE_ENV === 'production') {
         if (req.url.startsWith('/api')) {
             return next();
         }
-        res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
     });
 }
 

@@ -3,8 +3,11 @@ services:
     name: mern-app
     env: node
     buildCommand: |
-      cd frontend && npm install && npm run build && cd ../backend && npm install
-    startCommand: cd backend && npm start
+      cd frontend && npm install && npm run build
+      mkdir -p ../backend/public
+      cp -r dist/* ../backend/public/
+      cd ../backend && npm install
+    startCommand: cd backend && NODE_ENV=production node index.js
     envVars:
       - key: NODE_ENV
         value: production
