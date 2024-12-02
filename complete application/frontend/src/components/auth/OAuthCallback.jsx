@@ -15,38 +15,46 @@ const OAuthCallback = () => {
                 console.log('Processing OAuth callback');
                 // Get the data from the URL fragment
                 const fragment = location.hash.substring(1);
-                const params = new URLSearchParams(fragment || location.search);
+                const params = new URLSearchParams(fragment);
+                
+                // Parse token and user data
                 const token = params.get('token');
-                // eslint-disable-next-line no-unused-vars
-                const userData = params.get('user');
+                const userDataStr = params.get('user');
+                const error = params.get('error');
+                
+                console.log('Token:', token);
+                console.log('User data string:', userDataStr);
 
-                if (!token) {
-                    const error = params.get('error');
+                if (error) {
                     console.error('OAuth error:', error);
                     toast.error(error || 'Authentication failed');
                     navigate('/login');
                     return;
                 }
 
-                console.log('Received token and initial user data');
-                
-                // Store the token
-                localStorage.setItem('token', token);
+                if (!token || !userDataStr) {
+                    console.error('Missing token or user data');
+                    toast.error('Authentication failed');
+                    navigate('/login');
+                    return;
+                }
 
                 try {
-                    // Fetch the complete user profile
-                    const response = await apiService.getUserProfile();
-                    const fullUserData = response.data.user || response.data;
-                    console.log('Fetched full user profile');
+                    // Parse the user data
+                    const userData = JSON.parse(decodeURIComponent(userDataStr));
+                    console.log('Parsed user data:', userData);
+
+                    // Store the token
+                    localStorage.setItem('token', token);
                     
-                    // Update auth context with complete user data
-                    setUser(fullUserData);
+                    // Set the user in context
+                    setUser(userData);
                     
                     toast.success('Successfully logged in!');
-                    navigate('/dashboard');
-                } catch (profileError) {
-                    console.error('Error fetching user profile:', profileError);
-                    toast.error('Failed to fetch user profile');
+                    navigate('/dashboard', { replace: true });
+                } catch (parseError) {
+                    console.error('Error parsing user data:', parseError);
+                    toast.error('Failed to process user data');
                     localStorage.removeItem('token');
                     navigate('/login');
                 }
