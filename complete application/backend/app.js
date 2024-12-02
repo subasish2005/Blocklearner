@@ -11,6 +11,7 @@ const hpp = require('hpp');
 const path = require('path');
 const session = require('express-session');
 const User = require('./models/user.model');
+const fs = require('fs'); // Added fs module
 
 const errorHandler = require('./middlewares/errorHandler');
 const AppError = require('./utils/appError');
@@ -151,8 +152,10 @@ app.all('/api/*', (req, res, next) => {
 
 // Production configuration
 if (process.env.NODE_ENV === 'production') {
-    const publicPath = path.join(process.cwd(), 'public');
-    console.log('Serving static files from:', publicPath);
+    // In production, we're in the backend directory
+    const publicPath = path.resolve('./public');
+    console.log('Current working directory:', process.cwd());
+    console.log('Resolved public path:', publicPath);
     
     // Serve static files from public directory
     app.use(express.static(publicPath));
@@ -164,8 +167,14 @@ if (process.env.NODE_ENV === 'production') {
             return next();
         }
         const indexPath = path.join(publicPath, 'index.html');
-        console.log('Attempting to serve:', indexPath);
-        res.sendFile(indexPath);
+        console.log('Attempting to serve index from:', indexPath);
+        // Check if file exists before sending
+        if (fs.existsSync(indexPath)) {
+            res.sendFile(indexPath);
+        } else {
+            console.error('index.html not found at:', indexPath);
+            res.status(404).send('Frontend not built properly');
+        }
     });
 }
 
