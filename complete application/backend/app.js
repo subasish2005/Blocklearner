@@ -103,13 +103,20 @@ if (process.env.NODE_ENV === 'development') {
 // Gzip compression
 app.use(compression());
 
-// Mount API routes
+// Serve static files from the React app
+const frontendPath = process.env.NODE_ENV === 'production'
+  ? '/opt/render/project/src/complete application/frontend/dist'
+  : path.join(__dirname, '../../complete application/frontend/dist');
+
+app.use(express.static(frontendPath));
+
+// API Routes
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/dashboard', dashboardRoutes);
 app.use('/api/v1/notifications', notificationRoutes);
 app.use('/api/v1/friends', friendRoutes);
-app.use('/api/v1/tasks', gamifiedTaskRoutes);
+app.use('/api/v1/gamified-tasks', gamifiedTaskRoutes);
 
 console.log('\n=== Registered Routes ===');
 
@@ -139,7 +146,7 @@ console.log('\nFriend Routes:');
 listEndpoints(friendRoutes, '/api/v1/friends');
 
 console.log('\nTask Routes:');
-listEndpoints(gamifiedTaskRoutes, '/api/v1/tasks');
+listEndpoints(gamifiedTaskRoutes, '/api/v1/gamified-tasks');
 
 // API 404 handler - Only for /api routes
 app.all('/api/*', (req, res, next) => {
@@ -149,12 +156,11 @@ app.all('/api/*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// Serve static files from the React app
-const frontendPath = path.join(__dirname, '../../frontend/subasishforntend/dist');
-app.use(express.static(frontendPath));
-
-// Handle React routing
+// Handle React routing, return all requests to React app
 app.get('*', (req, res) => {
+    console.log('\n=== Serving Frontend ===');
+    console.log(`Serving index.html from: ${frontendPath}`);
+    console.log('======================\n');
     res.sendFile(path.join(frontendPath, 'index.html'));
 });
 

@@ -7,7 +7,8 @@
     "dev": "nodemon index.js",
     "test": "jest --watchAll",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "build": "cd ../../complete\\ application/frontend && npm install && npm run build && cd ../backend && npm install"
   },
   "keywords": [],
   "author": "",

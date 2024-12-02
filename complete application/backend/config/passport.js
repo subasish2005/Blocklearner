@@ -92,6 +92,15 @@ const googleOptions = {
     passReqToCallback: true
 };
 
+// Debug log to check OAuth configuration
+console.log('OAuth Configuration:', {
+    googleClientIDExists: !!process.env.GOOGLE_CLIENT_ID,
+    googleClientSecretExists: !!process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL: `${process.env.BACKEND_URL}/api/v1/auth/google/callback`,
+    environment: process.env.NODE_ENV,
+    backendURL: process.env.BACKEND_URL
+});
+
 passport.use(new GoogleStrategy(googleOptions, async (req, accessToken, refreshToken, profile, done) => {
     try {
         console.log('Google OAuth Profile:', profile);
@@ -135,7 +144,7 @@ passport.use(new GoogleStrategy(googleOptions, async (req, accessToken, refreshT
     }
 }));
 
-// GitHub OAuth Strategy
+// GitHub Strategy Configuration
 const githubOptions = {
     clientID: process.env.GITHUB_CLIENT_ID,
     clientSecret: process.env.GITHUB_CLIENT_SECRET,
