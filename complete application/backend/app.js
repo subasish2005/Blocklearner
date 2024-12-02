@@ -153,9 +153,20 @@ app.all('/api/*', (req, res, next) => {
 // Production configuration
 if (process.env.NODE_ENV === 'production') {
     // In production, we're in the backend directory
-    const publicPath = path.resolve('./public');
-    console.log('Current working directory:', process.cwd());
-    console.log('Resolved public path:', publicPath);
+    const publicPath = path.resolve(process.env.RENDER_PROJECT_DIR || process.cwd(), 'backend', 'public');
+    console.log('Environment:', {
+        RENDER_PROJECT_DIR: process.env.RENDER_PROJECT_DIR,
+        cwd: process.cwd(),
+        publicPath
+    });
+    
+    // List directory contents
+    try {
+        const dirContents = fs.readdirSync(path.dirname(publicPath));
+        console.log('Directory contents:', dirContents);
+    } catch (err) {
+        console.error('Error reading directory:', err);
+    }
     
     // Serve static files from public directory
     app.use(express.static(publicPath));
@@ -170,9 +181,10 @@ if (process.env.NODE_ENV === 'production') {
         console.log('Attempting to serve index from:', indexPath);
         // Check if file exists before sending
         if (fs.existsSync(indexPath)) {
+            console.log('Found index.html, serving...');
             res.sendFile(indexPath);
         } else {
-            console.error('index.html not found at:', indexPath);
+            console.error('index.html not found. Directory contents:', fs.readdirSync(publicPath));
             res.status(404).send('Frontend not built properly');
         }
     });

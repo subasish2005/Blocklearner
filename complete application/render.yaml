@@ -4,28 +4,38 @@ services:
     env: node
     buildCommand: |
       echo "Starting build process..."
-      pwd
+      echo "Current directory structure:"
+      ls -la
+      
       echo "Building frontend..."
       cd frontend
       npm install
       npm run build
       echo "Frontend build complete. Contents of dist:"
       ls -la dist/
-      cd ..
+      
       echo "Setting up backend..."
-      cd backend
+      cd ../backend
       npm install
-      echo "Creating public directory..."
-      rm -rf public
-      mkdir -p public
+      
+      echo "Setting up directory structure..."
+      BACKEND_DIR="$PWD"
+      PUBLIC_DIR="$BACKEND_DIR/public"
+      
+      echo "Creating public directory at $PUBLIC_DIR"
+      rm -rf "$PUBLIC_DIR"
+      mkdir -p "$PUBLIC_DIR"
+      
       echo "Copying frontend files..."
-      cp -rv ../frontend/dist/* public/
-      echo "Verifying public directory contents:"
-      ls -la public/
-      pwd
+      cp -rv "../frontend/dist/"* "$PUBLIC_DIR/"
+      
+      echo "Final directory structure:"
+      ls -la "$PUBLIC_DIR"
+      echo "Current path: $PWD"
     startCommand: |
       cd backend
       echo "Starting server from $(pwd)"
+      ls -la public/
       NODE_ENV=production node index.js
     envVars:
       - key: NODE_ENV
