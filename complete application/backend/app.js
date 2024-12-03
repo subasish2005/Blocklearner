@@ -41,14 +41,28 @@ app.use((req, res, next) => {
 
 // Security middleware
 app.use(helmet({
-    crossOriginResourcePolicy: { policy: "cross-origin" }
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    contentSecurityPolicy: {
+        directives: {
+            defaultSrc: ["'self'"],
+            connectSrc: ["'self'", process.env.FRONTEND_URL],
+            imgSrc: ["'self'", "data:", "blob:"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            styleSrc: ["'self'", "'unsafe-inline'"],
+        },
+    }
 }));
-app.use(cors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+
+// CORS configuration
+const corsOptions = {
+    origin: process.env.NODE_ENV === 'production' 
+        ? process.env.FRONTEND_URL 
+        : ['http://localhost:5173', 'http://localhost:3000'],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Frontend-URL']
-}));
+};
+app.use(cors(corsOptions));
 
 // Body parser
 app.use(express.json({ limit: '10mb' }));
@@ -152,54 +166,10 @@ app.all('/api/*', (req, res, next) => {
 
 // Production configuration
 if (process.env.NODE_ENV === 'production') {
-    const publicPath = path.join(__dirname, 'public');
-    
-    // Create public directory if it doesn't exist
-    if (!fs.existsSync(publicPath)) {
-        console.log('Creating public directory at:', publicPath);
-        fs.mkdirSync(publicPath, { recursive: true });
-    }
-    
-    console.log('Serving static files from:', publicPath);
-    app.use(express.static(publicPath));
-    
-    // Handle React routing
+    app.use(express.static(path.join(__dirname, 'public')));
     app.get('*', (req, res, next) => {
-        // Skip API routes
-        if (req.url.startsWith('/api')) {
-            return next();
-        }
-
-        const indexPath = path.join(publicPath, 'index.html');
-        console.log('Serving index.html from:', indexPath);
-        
-        // Check if index.html exists
-        if (!fs.existsSync(indexPath)) {
-            console.error('index.html not found. Checking parent directories...');
-            
-            // Try to find frontend files in parent directory
-            const parentFrontendPath = path.join(__dirname, '../frontend/dist');
-            console.log('Checking parent frontend path:', parentFrontendPath);
-            
-            if (fs.existsSync(path.join(parentFrontendPath, 'index.html'))) {
-                console.log('Found frontend files in parent directory, copying...');
-                try {
-                    // Copy all files from frontend/dist to public
-                    fs.cpSync(parentFrontendPath, publicPath, { recursive: true });
-                    console.log('Successfully copied frontend files to public directory');
-                    return res.sendFile(indexPath);
-                } catch (err) {
-                    console.error('Error copying frontend files:', err);
-                }
-            }
-            
-            return res.status(404).json({
-                status: 'error',
-                message: 'Frontend files not found'
-            });
-        }
-        
-        res.sendFile(indexPath);
+        if (req.url.startsWith('/api')) return next();
+        res.sendFile(path.join(__dirname, 'public', 'index.html'));
     });
 }
 
