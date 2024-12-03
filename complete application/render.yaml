@@ -9,26 +9,27 @@ services:
       echo "NPM version: $(npm -v)"
       echo "Current directory: $PWD"
       
-      # Install root dependencies first
-      echo "\n=== Installing root dependencies ==="
-      npm install
+      # Install dependencies
+      echo "\n=== Installing dependencies ==="
+      cd frontend && npm install
+      cd ../backend && npm install
+      cd ..
       
-      # Run the build script
-      echo "\n=== Running build script ==="
-      npm run build
+      # Build frontend
+      echo "\n=== Building frontend ==="
+      cd frontend && npm run build
       
-      # Verify the build
-      echo "\n=== Verifying build ==="
-      if [ ! -d "backend/public" ]; then
-        echo " ERROR: public directory not found!"
-        exit 1
-      fi
+      # Create public directory and copy files
+      echo "\n=== Copying frontend files ==="
+      mkdir -p backend/public
+      cp -rv frontend/dist/* backend/public/
       
-      echo "Backend public directory contents:"
+      # Verify the copy
+      echo "\n=== Verifying frontend files ==="
       ls -la backend/public/
       
       if [ ! -f "backend/public/index.html" ]; then
-        echo " ERROR: index.html not found!"
+        echo "ERROR: index.html not found!"
         echo "Frontend dist directory:"
         ls -la frontend/dist/
         echo "Backend public directory:"
@@ -36,22 +37,7 @@ services:
         exit 1
       fi
       
-      # List all relevant files
-      echo "\n=== File structure ==="
-      echo "Frontend dist:"
-      find frontend/dist -type f
-      echo "\nBackend public:"
-      find backend/public -type f
-      
       echo "\n=== BUILD COMPLETE ==="
-      echo "Final verification:"
-      echo "1. Frontend dist exists: $(test -d frontend/dist && echo ' Yes' || echo ' No')"
-      echo "2. Backend public exists: $(test -d backend/public && echo ' Yes' || echo ' No')"
-      echo "3. Index.html exists: $(test -f backend/public/index.html && echo ' Yes' || echo ' No')"
-      
-      # List all files for verification
-      echo "\nAll files in project:"
-      find . -type f -not -path "*/node_modules/*" -not -path "*/.git/*"
     startCommand: |
       cd backend
       echo "=== STARTING SERVER ==="
