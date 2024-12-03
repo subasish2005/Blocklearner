@@ -8,28 +8,15 @@ services:
       echo "Root directory: $PWD"
       ls -la
       
-      # Install and build frontend
-      echo "Building frontend..."
-      cd frontend
-      npm install --legacy-peer-deps
+      # Install dependencies and build
+      npm install
+      npm run install-all
       npm run build
       
-      # Install and build backend
-      echo "Building backend..."
-      cd ../backend
-      npm install
-      
-      # Create public directory and copy frontend build
-      echo "Creating public directory..."
-      mkdir -p public
-      
-      echo "Copying frontend build files..."
-      cp -r ../frontend/dist/* public/
-      
-      # Verify the copy
-      echo "Verifying frontend files..."
-      ls -la public/
-    startCommand: cd backend && node index.js
+      # Verify the build
+      echo "Verifying backend/public directory:"
+      ls -la backend/public/
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
