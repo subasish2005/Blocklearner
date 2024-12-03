@@ -166,10 +166,18 @@ app.all('/api/*', (req, res, next) => {
 
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-    const publicPath = path.join(__dirname, 'public');
     console.log('Production mode detected');
-    console.log('Current directory:', __dirname);
-    console.log('Public path:', publicPath);
+    console.log('Current directory:', process.cwd());
+    console.log('__dirname:', __dirname);
+    
+    // Define paths
+    const publicPath = path.join(__dirname, 'public');
+    const indexPath = path.join(publicPath, 'index.html');
+    
+    console.log('Paths:', {
+        publicPath,
+        indexPath
+    });
     
     try {
         // Check if public directory exists
@@ -181,7 +189,9 @@ if (process.env.NODE_ENV === 'production') {
         // List contents of public directory
         console.log('Public directory contents:');
         fs.readdirSync(publicPath).forEach(file => {
-            console.log(' -', file);
+            const filePath = path.join(publicPath, file);
+            const stats = fs.statSync(filePath);
+            console.log(` - ${file} (${stats.isDirectory() ? 'directory' : 'file'}, ${stats.size} bytes)`);
         });
         
         // Serve static files
@@ -189,24 +199,38 @@ if (process.env.NODE_ENV === 'production') {
         
         // Handle React routing
         app.get('*', (req, res, next) => {
+            // Skip API routes
             if (req.url.startsWith('/api')) {
                 return next();
             }
             
-            const indexPath = path.join(publicPath, 'index.html');
-            console.log('Request path:', req.url);
-            console.log('Serving index.html from:', indexPath);
+            console.log('Handling route:', req.url);
+            console.log('Checking index.html at:', indexPath);
             
             if (!fs.existsSync(indexPath)) {
-                console.error('index.html not found. Directory contents:');
-                fs.readdirSync(publicPath).forEach(file => {
-                    console.log(' -', file);
-                });
+                console.error('index.html not found. Directory structure:');
+                const showDir = (dir, prefix = '') => {
+                    const items = fs.readdirSync(dir);
+                    items.forEach(item => {
+                        const fullPath = path.join(dir, item);
+                        const stats = fs.statSync(fullPath);
+                        console.log(`${prefix}- ${item} (${stats.isDirectory() ? 'directory' : 'file'}, ${stats.size} bytes)`);
+                        if (stats.isDirectory()) {
+                            showDir(fullPath, `${prefix}  `);
+                        }
+                    });
+                };
+                showDir(publicPath);
+                
                 return res.status(404).json({
                     status: 'error',
                     message: 'Frontend files not found',
-                    publicPath,
-                    indexPath
+                    debug: {
+                        cwd: process.cwd(),
+                        dirname: __dirname,
+                        publicPath,
+                        indexPath
+                    }
                 });
             }
             
@@ -214,6 +238,7 @@ if (process.env.NODE_ENV === 'production') {
         });
     } catch (error) {
         console.error('Error setting up static files:', error);
+        console.error('Stack trace:', error.stack);
     }
 }
 

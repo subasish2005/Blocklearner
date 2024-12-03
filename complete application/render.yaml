@@ -3,16 +3,15 @@ services:
     name: blocklearner-backend
     env: node
     buildCommand: |
-      # Debug: Show current directory
-      pwd
-      echo "Contents of current directory:"
-      ls -la
+      # Debug: Show current directory and structure
+      echo "Root directory: $PWD"
+      echo "Directory structure:"
+      tree -L 2
       
       # Build frontend
       echo "Building frontend..."
       cd frontend
-      echo "Frontend directory contents:"
-      ls -la
+      echo "Frontend directory: $PWD"
       npm install --legacy-peer-deps
       npm run build
       echo "Frontend build output:"
@@ -21,28 +20,35 @@ services:
       # Build backend
       echo "Building backend..."
       cd ../backend
-      echo "Backend directory contents:"
-      ls -la
+      echo "Backend directory: $PWD"
       npm install
       
-      # Create public directory and copy frontend files
-      echo "Setting up public directory..."
-      PUBLIC_DIR="$PWD/public"
+      # Copy frontend build to backend/public
+      echo "Copying frontend build..."
+      BACKEND_DIR="$PWD"
+      FRONTEND_BUILD_DIR="../frontend/dist"
+      PUBLIC_DIR="$BACKEND_DIR/public"
+      
+      echo "Creating public directory at: $PUBLIC_DIR"
       mkdir -p "$PUBLIC_DIR"
-      echo "Copying frontend build files..."
-      cp -rv ../frontend/dist/* "$PUBLIC_DIR/"
+      
+      echo "Copying from $FRONTEND_BUILD_DIR to $PUBLIC_DIR"
+      cp -rv "$FRONTEND_BUILD_DIR"/* "$PUBLIC_DIR/"
       
       # Verify the copy
       echo "Verifying frontend files..."
-      echo "Public directory contents:"
+      echo "Public directory ($PUBLIC_DIR) contents:"
       ls -la "$PUBLIC_DIR"
+      
       if [ ! -f "$PUBLIC_DIR/index.html" ]; then
         echo "Error: index.html not found in $PUBLIC_DIR"
+        echo "Frontend build directory contents:"
+        ls -la "$FRONTEND_BUILD_DIR"
         exit 1
       fi
     startCommand: |
       cd backend
-      echo "Starting server from $(pwd)"
+      echo "Starting server from: $PWD"
       echo "Directory contents:"
       ls -la
       echo "Public directory contents:"
