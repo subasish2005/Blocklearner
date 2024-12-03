@@ -3,15 +3,30 @@ services:
     name: blocklearner-backend
     env: node
     buildCommand: |
+      # Build frontend
+      echo "Building frontend..."
       cd frontend
-      npm install
+      npm install --legacy-peer-deps
       npm run build
+      
+      # Build backend
+      echo "Building backend..."
       cd ../backend
       npm install
+      
+      # Copy frontend build to backend public
+      echo "Copying frontend build..."
       mkdir -p public
       cp -r ../frontend/dist/* public/
+      
+      # Verify the copy
+      echo "Verifying frontend files..."
       ls -la public/
-    startCommand: node index.js
+      if [ ! -f "public/index.html" ]; then
+        echo "Error: index.html not found in public directory"
+        exit 1
+      fi
+    startCommand: cd backend && node index.js
     envVars:
       - key: NODE_ENV
         value: production
