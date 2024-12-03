@@ -5,8 +5,8 @@
   "scripts": {
     "install-all": "npm install --prefix frontend && npm install --prefix backend",
     "build-frontend": "cd frontend && npm run build",
-    "copy-frontend": "mkdir -p backend/public && cp -r frontend/dist/* backend/public/",
-    "verify-copy": "if [ -f \"backend/public/index.html\" ]; then echo \" Frontend files copied successfully\"; else echo \" Frontend files not found\" && exit 1; fi",
+    "copy-frontend": "sh -c 'echo \"Cleaning public directory...\" && rm -rf backend/public && echo \"Creating public directory...\" && mkdir -p backend/public && echo \"Copying files...\" && cp -rv frontend/dist/* backend/public/ 2>&1 || (echo \"Copy failed\" && exit 1)'",
+    "verify-copy": "sh -c 'echo \"Verifying copy...\" && ls -la backend/public/ && if [ -f \"backend/public/index.html\" ]; then echo \"Frontend files copied successfully\"; else echo \"Frontend files not found\" && exit 1; fi'",
     "build": "npm run install-all && npm run build-frontend && npm run copy-frontend && npm run verify-copy",
     "start": "cd backend && PORT=10000 node index.js",
     "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && PORT=10000 nodemon index.js\""
