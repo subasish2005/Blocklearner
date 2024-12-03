@@ -2,15 +2,16 @@ services:
   - type: web
     name: blocklearner-backend
     env: node
+    rootDir: backend
     buildCommand: |
       # Debug: Show current directory and structure
       echo "Root directory: $PWD"
       echo "Directory structure:"
-      tree -L 2
+      ls -la ../
       
       # Build frontend
       echo "Building frontend..."
-      cd frontend
+      cd ../frontend
       echo "Frontend directory: $PWD"
       npm install --legacy-peer-deps
       npm run build
@@ -25,35 +26,22 @@ services:
       
       # Copy frontend build to backend/public
       echo "Copying frontend build..."
-      BACKEND_DIR="$PWD"
-      FRONTEND_BUILD_DIR="../frontend/dist"
-      PUBLIC_DIR="$BACKEND_DIR/public"
-      
-      echo "Creating public directory at: $PUBLIC_DIR"
-      mkdir -p "$PUBLIC_DIR"
-      
-      echo "Copying from $FRONTEND_BUILD_DIR to $PUBLIC_DIR"
-      cp -rv "$FRONTEND_BUILD_DIR"/* "$PUBLIC_DIR/"
+      mkdir -p public
+      echo "Copying from ../frontend/dist to public/"
+      cp -rv ../frontend/dist/* public/
       
       # Verify the copy
       echo "Verifying frontend files..."
-      echo "Public directory ($PUBLIC_DIR) contents:"
-      ls -la "$PUBLIC_DIR"
-      
-      if [ ! -f "$PUBLIC_DIR/index.html" ]; then
-        echo "Error: index.html not found in $PUBLIC_DIR"
-        echo "Frontend build directory contents:"
-        ls -la "$FRONTEND_BUILD_DIR"
-        exit 1
-      fi
-    startCommand: |
-      cd backend
-      echo "Starting server from: $PWD"
-      echo "Directory contents:"
-      ls -la
       echo "Public directory contents:"
       ls -la public/
-      node index.js
+      
+      if [ ! -f "public/index.html" ]; then
+        echo "Error: index.html not found in public/"
+        echo "Frontend build directory contents:"
+        ls -la ../frontend/dist
+        exit 1
+      fi
+    startCommand: node index.js
     envVars:
       - key: NODE_ENV
         value: production
