@@ -167,31 +167,54 @@ app.all('/api/*', (req, res, next) => {
 // Serve static files in production
 if (process.env.NODE_ENV === 'production') {
     const publicPath = path.join(__dirname, 'public');
-    console.log('Serving static files from:', publicPath);
+    console.log('Production mode detected');
+    console.log('Current directory:', __dirname);
+    console.log('Public path:', publicPath);
     
-    // Serve static files
-    app.use(express.static(publicPath));
-    
-    // Handle React routing
-    app.get('*', (req, res, next) => {
-        if (req.url.startsWith('/api')) {
-            return next();
+    try {
+        // Check if public directory exists
+        if (!fs.existsSync(publicPath)) {
+            console.log('Creating public directory');
+            fs.mkdirSync(publicPath, { recursive: true });
         }
         
-        const indexPath = path.join(publicPath, 'index.html');
-        console.log('Requested path:', req.url);
-        console.log('Serving index.html from:', indexPath);
+        // List contents of public directory
+        console.log('Public directory contents:');
+        fs.readdirSync(publicPath).forEach(file => {
+            console.log(' -', file);
+        });
         
-        if (!fs.existsSync(indexPath)) {
-            console.error('index.html not found at:', indexPath);
-            return res.status(404).json({
-                status: 'error',
-                message: 'Frontend files not found'
-            });
-        }
+        // Serve static files
+        app.use(express.static(publicPath));
         
-        res.sendFile(indexPath);
-    });
+        // Handle React routing
+        app.get('*', (req, res, next) => {
+            if (req.url.startsWith('/api')) {
+                return next();
+            }
+            
+            const indexPath = path.join(publicPath, 'index.html');
+            console.log('Request path:', req.url);
+            console.log('Serving index.html from:', indexPath);
+            
+            if (!fs.existsSync(indexPath)) {
+                console.error('index.html not found. Directory contents:');
+                fs.readdirSync(publicPath).forEach(file => {
+                    console.log(' -', file);
+                });
+                return res.status(404).json({
+                    status: 'error',
+                    message: 'Frontend files not found',
+                    publicPath,
+                    indexPath
+                });
+            }
+            
+            res.sendFile(indexPath);
+        });
+    } catch (error) {
+        console.error('Error setting up static files:', error);
+    }
 }
 
 // Global error handler
