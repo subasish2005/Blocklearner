@@ -7,75 +7,47 @@ services:
       echo "=== BUILD START ==="
       echo "Node version: $(node -v)"
       echo "NPM version: $(npm -v)"
+      echo "Current directory: $PWD"
       
-      # Save root directory
-      ROOT_DIR="$PWD"
-      echo "Root directory: $ROOT_DIR"
-      
-      # Build frontend first
-      echo "\n=== FRONTEND BUILD ==="
-      cd frontend
-      echo "Frontend directory: $PWD"
-      
-      # Clean install dependencies
-      echo "Installing frontend dependencies..."
-      rm -rf node_modules package-lock.json
-      npm install --legacy-peer-deps
-      
-      # Build frontend
-      echo "Building frontend..."
-      npm run build
-      
-      # Verify frontend build
-      echo "Verifying frontend build..."
-      if [ ! -d "dist" ]; then
-        echo " ERROR: dist directory not found!"
-        exit 1
-      fi
-      
-      echo "Frontend build contents:"
-      ls -la dist/
-      find dist -type f
-      
-      # Build backend
-      echo "\n=== BACKEND BUILD ==="
-      cd ../backend
-      echo "Backend directory: $PWD"
-      
-      # Clean install dependencies
-      echo "Installing backend dependencies..."
-      rm -rf node_modules package-lock.json
+      # Install root dependencies first
+      echo "\n=== Installing root dependencies ==="
       npm install
       
-      # Prepare public directory
-      echo "Setting up public directory..."
-      rm -rf public
-      mkdir -p public
+      # Run the build script
+      echo "\n=== Running build script ==="
+      npm run build
       
-      # Copy frontend build
-      echo "Copying frontend build to public..."
-      cp -rv ../frontend/dist/* public/
-      
-      # Verify the copy
-      echo "Verifying copied files..."
-      if [ ! -f "public/index.html" ]; then
-        echo " ERROR: Frontend files not copied correctly!"
-        echo "Frontend dist directory:"
-        ls -la ../frontend/dist/
-        echo "Backend public directory:"
-        ls -la public/
+      # Verify the build
+      echo "\n=== Verifying build ==="
+      if [ ! -d "backend/public" ]; then
+        echo " ERROR: public directory not found!"
         exit 1
       fi
       
-      echo "Public directory contents:"
-      ls -la public/
-      find public -type f
+      echo "Backend public directory contents:"
+      ls -la backend/public/
+      
+      if [ ! -f "backend/public/index.html" ]; then
+        echo " ERROR: index.html not found!"
+        echo "Frontend dist directory:"
+        ls -la frontend/dist/
+        echo "Backend public directory:"
+        ls -la backend/public/
+        exit 1
+      fi
+      
+      # List all relevant files
+      echo "\n=== File structure ==="
+      echo "Frontend dist:"
+      find frontend/dist -type f
+      echo "\nBackend public:"
+      find backend/public -type f
       
       echo "\n=== BUILD COMPLETE ==="
       echo "Final verification:"
-      echo "1. Frontend dist exists: $(test -d ../frontend/dist && echo ' Yes' || echo ' No')"
-      echo "2. Backend public exists: $(test -d public && echo ' Yes' || echo ' No')"
-      echo "3. Index.html exists: $(test -f public/index.html && echo ' Yes' || echo ' No')"
+      echo "1. Frontend dist exists: $(test -d frontend/dist && echo ' Yes' || echo ' No')"
+      echo "2. Backend public exists: $(test -d backend/public && echo ' Yes' || echo ' No')"
+      echo "3. Index.html exists: $(test -f backend/public/index.html && echo ' Yes' || echo ' No')"
       
       # List all files for verification
       echo "\nAll files in project:"
@@ -84,13 +56,21 @@ services:
       cd backend
       echo "=== STARTING SERVER ==="
       echo "Current directory: $PWD"
-      echo "Public directory contents:"
-      ls -la public/
-      if [ ! -f "public/index.html" ]; then
-        echo " ERROR: index.html not found before starting server!"
+      
+      # Final verification
+      if [ ! -d "public" ] || [ ! -f "public/index.html" ]; then
+        echo " ERROR: Frontend files not found before starting server!"
+        echo "Public directory contents:"
+        ls -la public/ || true
         exit 1
       fi
+      
       echo " Frontend files verified, starting server..."
+      echo "Public directory contents:"
+      ls -la public/
+      find public -type f
+      
+      echo "\nStarting server..."
       PORT=10000 node index.js
     envVars:
       - key: NODE_ENV

@@ -3,12 +3,13 @@
   "version": "1.0.0",
   "description": "A MERN stack application for learning",
   "scripts": {
-    "install-all": "cd frontend && npm install --legacy-peer-deps && cd ../backend && npm install",
-    "build": "npm run build:frontend && npm run build:backend",
-    "build:frontend": "cd frontend && npm run build",
-    "build:backend": "cd backend && mkdir -p public && cp -r ../frontend/dist/* public/ && node -e \"const fs=require('fs'); const path=require('path'); const publicDir=path.join(process.cwd(),'public'); if (!fs.existsSync(path.join(publicDir,'index.html'))) { console.error('Frontend build failed: index.html not found in ' + publicDir); process.exit(1); }\"",
+    "install-all": "npm install --prefix frontend && npm install --prefix backend",
+    "build-frontend": "cd frontend && npm run build",
+    "copy-frontend": "mkdir -p backend/public && cp -r frontend/dist/* backend/public/",
+    "verify-copy": "if [ -f \"backend/public/index.html\" ]; then echo \" Frontend files copied successfully\"; else echo \" Frontend files not found\" && exit 1; fi",
+    "build": "npm run install-all && npm run build-frontend && npm run copy-frontend && npm run verify-copy",
     "start": "cd backend && PORT=10000 node index.js",
-    "dev": "cd backend && PORT=10000 nodemon index.js"
+    "dev": "concurrently \"cd frontend && npm run dev\" \"cd backend && PORT=10000 nodemon index.js\""
   },
   "engines": {
     "node": ">=18.0.0"
@@ -17,5 +18,8 @@
   "workspaces": [
     "frontend",
     "backend"
-  ]
+  ],
+  "dependencies": {
+    "concurrently": "^8.2.0"
+  }
 }
