@@ -164,12 +164,33 @@ app.all('/api/*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
-// Production configuration
+// Serve static files in production
 if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, 'public')));
+    const publicPath = path.join(__dirname, 'public');
+    console.log('Serving static files from:', publicPath);
+    
+    // Serve static files
+    app.use(express.static(publicPath));
+    
+    // Handle React routing
     app.get('*', (req, res, next) => {
-        if (req.url.startsWith('/api')) return next();
-        res.sendFile(path.join(__dirname, 'public', 'index.html'));
+        if (req.url.startsWith('/api')) {
+            return next();
+        }
+        
+        const indexPath = path.join(publicPath, 'index.html');
+        console.log('Requested path:', req.url);
+        console.log('Serving index.html from:', indexPath);
+        
+        if (!fs.existsSync(indexPath)) {
+            console.error('index.html not found at:', indexPath);
+            return res.status(404).json({
+                status: 'error',
+                message: 'Frontend files not found'
+            });
+        }
+        
+        res.sendFile(indexPath);
     });
 }
 

@@ -3,7 +3,6 @@ services:
     name: blocklearner-backend
     env: node
     buildCommand: |
-      echo "Starting build process..."
       cd frontend
       npm install
       npm run build
@@ -11,7 +10,8 @@ services:
       npm install
       mkdir -p public
       cp -r ../frontend/dist/* public/
-    startCommand: cd backend && NODE_ENV=production node index.js
+      ls -la public/
+    startCommand: node index.js
     envVars:
       - key: NODE_ENV
         value: production
@@ -30,6 +30,6 @@ services:
       - key: GITHUB_CLIENT_SECRET
         sync: false
       - key: FRONTEND_URL
-        sync: false
+        value: https://blocklearner-backend.onrender.com
       - key: BACKEND_URL
-        sync: false
+        value: https://blocklearner-backend.onrender.com
