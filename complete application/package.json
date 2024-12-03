@@ -4,10 +4,11 @@
   "description": "A MERN stack application for learning",
   "scripts": {
     "install-all": "cd frontend && npm install --legacy-peer-deps && cd ../backend && npm install",
-    "build": "npm run build:frontend && npm run build:copy",
+    "build": "npm run build:frontend && npm run build:backend",
     "build:frontend": "cd frontend && npm run build",
-    "build:copy": "mkdir -p backend/public && cp -r frontend/dist/* backend/public/ && node -e \"if (!require('fs').existsSync('backend/public/index.html')) { console.error('Frontend build failed: index.html not found'); process.exit(1); }\"",
-    "start": "cd backend && node index.js"
+    "build:backend": "cd backend && mkdir -p public && cp -r ../frontend/dist/* public/ && node -e \"const fs=require('fs'); const path=require('path'); const publicDir=path.join(process.cwd(),'public'); if (!fs.existsSync(path.join(publicDir,'index.html'))) { console.error('Frontend build failed: index.html not found in ' + publicDir); process.exit(1); }\"",
+    "start": "cd backend && PORT=10000 node index.js",
+    "dev": "cd backend && PORT=10000 nodemon index.js"
   },
   "engines": {
     "node": ">=18.0.0"

@@ -5,7 +5,8 @@ services:
     rootDir: .
     buildCommand: |
       # Debug: Show current directory and structure
-      echo "Root directory: $PWD"
+      ROOT_DIR="$PWD"
+      echo "Root directory: $ROOT_DIR"
       echo "Directory contents before build:"
       ls -la
       
@@ -17,37 +18,52 @@ services:
       # Build frontend
       echo "Building frontend..."
       cd frontend
-      echo "Frontend directory contents:"
-      ls -la
-      echo "Running build..."
+      echo "Frontend directory: $PWD"
       npm run build
-      echo "Build output:"
+      echo "Frontend build output:"
       ls -la dist/
-      cd ..
       
-      # Copy to backend
-      echo "Copying to backend/public..."
-      mkdir -p backend/public
-      cp -rv frontend/dist/* backend/public/
+      # Prepare backend
+      echo "Preparing backend..."
+      cd ../backend
+      echo "Backend directory: $PWD"
+      
+      # Create public directory
+      echo "Creating public directory..."
+      mkdir -p public
+      PUBLIC_DIR="$PWD/public"
+      echo "Public directory: $PUBLIC_DIR"
+      
+      # Copy frontend files
+      echo "Copying frontend files..."
+      echo "Source: $ROOT_DIR/frontend/dist/*"
+      echo "Destination: $PUBLIC_DIR"
+      cp -rv "$ROOT_DIR/frontend/dist/"* "$PUBLIC_DIR/"
       
       # Verify the copy
-      echo "Verifying backend/public directory:"
-      ls -la backend/public/
+      echo "Verifying copied files..."
+      echo "Public directory contents:"
+      ls -la "$PUBLIC_DIR"
       
-      if [ ! -f "backend/public/index.html" ]; then
+      if [ ! -f "$PUBLIC_DIR/index.html" ]; then
         echo "ERROR: index.html not found!"
+        echo "Current directory: $PWD"
         echo "Frontend dist contents:"
-        ls -la frontend/dist/
+        ls -la "$ROOT_DIR/frontend/dist/"
         echo "Backend public contents:"
-        ls -la backend/public/
+        ls -la "$PUBLIC_DIR"
         exit 1
       fi
       
       echo "Build completed successfully!"
-    startCommand: npm start
+      echo "Final directory structure:"
+      find . -type f -o -type d | sort
+    startCommand: cd backend && PORT=10000 node index.js
     envVars:
       - key: NODE_ENV
         value: production
+      - key: PORT
+        value: "10000"
       - key: MONGODB_URI
         sync: false
       - key: JWT_SECRET
