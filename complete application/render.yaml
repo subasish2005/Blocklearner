@@ -4,61 +4,82 @@ services:
     env: node
     rootDir: .
     buildCommand: |
-      # Debug: Show current directory and structure
+      echo "=== BUILD START ==="
+      echo "Node version: $(node -v)"
+      echo "NPM version: $(npm -v)"
+      
+      # Set root directory
       ROOT_DIR="$PWD"
       echo "Root directory: $ROOT_DIR"
-      echo "Directory contents before build:"
+      echo "Contents:"
       ls -la
       
-      # Install dependencies
-      echo "Installing dependencies..."
-      npm install
-      npm run install-all
-      
-      # Build frontend
-      echo "Building frontend..."
+      echo "\n=== FRONTEND BUILD ==="
       cd frontend
       echo "Frontend directory: $PWD"
-      npm run build
-      echo "Frontend build output:"
-      ls -la dist/
+      echo "Contents before build:"
+      ls -la
       
-      # Prepare backend
-      echo "Preparing backend..."
+      echo "\nInstalling frontend dependencies..."
+      npm install --legacy-peer-deps
+      
+      echo "\nBuilding frontend..."
+      npm run build
+      
+      echo "\nFrontend build output (dist/):"
+      ls -la dist/
+      echo "\nFrontend build contents:"
+      find dist/ -type f
+      
+      echo "\n=== BACKEND SETUP ==="
       cd ../backend
       echo "Backend directory: $PWD"
+      echo "Contents before setup:"
+      ls -la
       
-      # Create public directory
-      echo "Creating public directory..."
+      echo "\nInstalling backend dependencies..."
+      npm install
+      
+      echo "\nSetting up public directory..."
+      # Remove existing public directory if it exists
+      rm -rf public
       mkdir -p public
-      PUBLIC_DIR="$PWD/public"
-      echo "Public directory: $PUBLIC_DIR"
       
-      # Copy frontend files
-      echo "Copying frontend files..."
-      echo "Source: $ROOT_DIR/frontend/dist/*"
-      echo "Destination: $PUBLIC_DIR"
-      cp -rv "$ROOT_DIR/frontend/dist/"* "$PUBLIC_DIR/"
+      echo "\nCopying frontend build..."
+      cp -rv ../frontend/dist/* public/
       
-      # Verify the copy
-      echo "Verifying copied files..."
+      echo "\nVerifying public directory..."
       echo "Public directory contents:"
-      ls -la "$PUBLIC_DIR"
+      ls -la public/
+      find public/ -type f
       
-      if [ ! -f "$PUBLIC_DIR/index.html" ]; then
-        echo "ERROR: index.html not found!"
-        echo "Current directory: $PWD"
-        echo "Frontend dist contents:"
-        ls -la "$ROOT_DIR/frontend/dist/"
-        echo "Backend public contents:"
-        ls -la "$PUBLIC_DIR"
+      if [ ! -f "public/index.html" ]; then
+        echo "\n ERROR: index.html not found!"
+        echo "Current working directory: $PWD"
+        echo "Expected location: $PWD/public/index.html"
+        echo "\nFrontend dist/ contents:"
+        ls -la ../frontend/dist/
         exit 1
       fi
       
-      echo "Build completed successfully!"
-      echo "Final directory structure:"
-      find . -type f -o -type d | sort
-    startCommand: cd backend && PORT=10000 node index.js
+      echo "\n=== FINAL VERIFICATION ==="
+      echo "Working directory: $PWD"
+      echo "Directory structure:"
+      find . -maxdepth 2 -type d
+      echo "\nPublic directory files:"
+      find public/ -type f
+      
+      echo "\n Build completed successfully!"
+    startCommand: |
+      echo "=== STARTING SERVER ==="
+      echo "Working directory: $PWD"
+      cd backend
+      echo "Backend directory: $PWD"
+      echo "Contents:"
+      ls -la
+      echo "\nPublic directory contents:"
+      ls -la public/
+      PORT=10000 node index.js
     envVars:
       - key: NODE_ENV
         value: production
