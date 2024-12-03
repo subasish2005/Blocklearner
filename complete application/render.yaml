@@ -6,16 +6,44 @@ services:
     buildCommand: |
       # Debug: Show current directory and structure
       echo "Root directory: $PWD"
+      echo "Directory contents before build:"
       ls -la
       
-      # Install dependencies and build
+      # Install dependencies
+      echo "Installing dependencies..."
       npm install
       npm run install-all
-      npm run build
       
-      # Verify the build
+      # Build frontend
+      echo "Building frontend..."
+      cd frontend
+      echo "Frontend directory contents:"
+      ls -la
+      echo "Running build..."
+      npm run build
+      echo "Build output:"
+      ls -la dist/
+      cd ..
+      
+      # Copy to backend
+      echo "Copying to backend/public..."
+      mkdir -p backend/public
+      cp -rv frontend/dist/* backend/public/
+      
+      # Verify the copy
       echo "Verifying backend/public directory:"
       ls -la backend/public/
+      
+      if [ ! -f "backend/public/index.html" ]; then
+        echo "ERROR: index.html not found!"
+        echo "Frontend dist contents:"
+        ls -la frontend/dist/
+        echo "Backend public contents:"
+        ls -la backend/public/
+        exit 1
+      fi
+      
+      echo "Build completed successfully!"
     startCommand: npm start
     envVars:
       - key: NODE_ENV

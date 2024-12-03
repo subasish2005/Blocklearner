@@ -4,7 +4,9 @@
   "description": "A MERN stack application for learning",
   "scripts": {
     "install-all": "cd frontend && npm install --legacy-peer-deps && cd ../backend && npm install",
-    "build": "cd frontend && npm run build && cd ../backend && mkdir -p public && cp -r ../frontend/dist/* public/",
+    "build": "npm run build:frontend && npm run build:copy",
+    "build:frontend": "cd frontend && npm run build",
+    "build:copy": "mkdir -p backend/public && cp -r frontend/dist/* backend/public/ && node -e \"if (!require('fs').existsSync('backend/public/index.html')) { console.error('Frontend build failed: index.html not found'); process.exit(1); }\"",
     "start": "cd backend && node index.js"
   },
   "engines": {
